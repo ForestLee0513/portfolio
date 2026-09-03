@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import BlogPost from "@/components/screens/BlogPost";
 import { getBlogPost } from "@/api/blog/requests";
 
@@ -20,8 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
-  const post = await getBlogPost(id);
-  if (!post) notFound();
-
-  return <BlogPost post={post} />;
+  // 존재 여부 확인(notFound)과 실제 렌더링은 BlogPost 안의 Suspense 경계 안에서
+  // 처리된다 — 여기서는 id만 넘기고 Notion 조회는 기다리지 않는다.
+  return <BlogPost id={id} />;
 }

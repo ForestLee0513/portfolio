@@ -1,22 +1,12 @@
-import Image from "next/image";
+import { Suspense } from "react";
 import Link from "next/link";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Badge } from "@/components/ui/badge";
-import type { BlogPostDetail } from "@/api/blog/types";
-import MarkdownContent from "./parts/MarkdownContent";
+import BlogPostContent from "./parts/BlogPostContent";
+import BlogPostSkeleton from "./parts/BlogPostSkeleton";
 
-function formatDate(date: string | null) {
-  if (!date) return null;
-  return new Date(date).toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-export default function BlogPost({ post }: { post: BlogPostDetail }) {
-  const formattedDate = formatDate(post.date);
-
+// "블로그 목록" 링크는 Notion 조회 없이 그릴 수 있어 즉시 렌더링되고,
+// 본문(BlogPostContent)만 Suspense 뒤에서 스트리밍된다.
+export default function BlogPost({ id }: { id: string }) {
   return (
     <article className="px-5 py-12 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-3xl">
@@ -28,33 +18,9 @@ export default function BlogPost({ post }: { post: BlogPostDetail }) {
           블로그 목록
         </Link>
 
-        <header className="mt-6">
-          {post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {post.tags.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {post.title}
-          </h1>
-          {formattedDate && (
-            <p className="mt-3 text-sm text-muted-foreground">{formattedDate}</p>
-          )}
-        </header>
-
-        {post.cover && (
-          <div className="relative mt-8 aspect-video w-full overflow-hidden rounded-3xl bg-muted">
-            <Image src={post.cover} alt={post.title} fill className="object-cover" unoptimized />
-          </div>
-        )}
-
-        <div className="mt-10">
-          <MarkdownContent markdown={post.markdown} />
-        </div>
+        <Suspense fallback={<BlogPostSkeleton />}>
+          <BlogPostContent id={id} />
+        </Suspense>
       </div>
     </article>
   );

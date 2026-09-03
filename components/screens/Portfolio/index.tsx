@@ -1,20 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useState } from "react";
 import PageHeader from "@/components/common/PageHeader";
+import CardGridSkeleton from "@/components/common/CardGridSkeleton";
 import type { PortfolioProject } from "@/api/portfolio/types";
 import FilterTabs, { type Filter } from "./parts/FilterTabs";
-import ProjectCard from "./parts/ProjectCard";
+import PortfolioGrid from "./parts/PortfolioGrid";
 
-// 필터 상태만 있는 화면이라 index.tsx가 상태를 들고 parts/에 렌더링을 위임한다.
-// 프로젝트 데이터는 서버 컴포넌트(app/portfolio/page.tsx)가 Notion에서 읽어와 prop으로 내려준다.
-export default function Portfolio({ projects }: { projects: PortfolioProject[] }) {
+// projectsPromise는 서버 컴포넌트(app/portfolio/page.tsx)가 await 없이 곧바로 넘긴 프로미스다.
+// 헤더/필터는 즉시 렌더링되고, 실제 목록(PortfolioGrid)만 Suspense 뒤에서 스트리밍된다.
+export default function Portfolio({
+  projectsPromise,
+}: {
+  projectsPromise: Promise<PortfolioProject[]>;
+}) {
   const [filter, setFilter] = useState<Filter>("전체");
-
-  const filtered = useMemo(
-    () => (filter === "전체" ? projects : projects.filter((p) => p.category === filter)),
-    [filter, projects]
-  );
 
   return (
     <>
@@ -29,20 +29,9 @@ export default function Portfolio({ projects }: { projects: PortfolioProject[] }
       </PageHeader>
 
       <section className="px-5 py-12 sm:px-8 sm:py-16">
-        {projects.length === 0 ? (
-          <div className="mx-auto flex max-w-5xl flex-col items-center gap-2 rounded-4xl border border-dashed border-border py-24 text-center">
-            <p className="font-medium text-foreground">아직 등록된 프로젝트가 없어요</p>
-            <p className="text-sm text-muted-foreground">
-              Notion 데이터베이스에 프로젝트를 추가하면 이곳에 자동으로 표시됩니다.
-            </p>
-          </div>
-        ) : (
-          <div className="mx-auto grid max-w-5xl gap-5 sm:grid-cols-2">
-            {filtered.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
-            ))}
-          </div>
-        )}
+        <Suspense fallback={<CardGridSkeleton count={4} columns="sm:grid-cols-2" />}>
+          <PortfolioGrid projectsPromise={projectsPromise} filter={filter} />
+        </Suspense>
       </section>
     </>
   );
