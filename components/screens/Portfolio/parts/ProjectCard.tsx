@@ -3,21 +3,19 @@
 import { motion } from "motion/react";
 import { IconExternalLink } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
-import type { Project } from "@/lib/data/projects";
+import type { PortfolioProject } from "@/api/portfolio/types";
 
 export default function ProjectCard({
   project,
   index,
 }: {
-  project: Project;
+  project: PortfolioProject;
   index: number;
 }) {
   return (
     <motion.article
-      layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.35, delay: (index % 6) * 0.05 }}
       whileHover={{ y: -4 }}
       className="flex flex-col gap-4 rounded-4xl bg-card p-6 shadow-sm ring-1 ring-foreground/5 transition-shadow hover:shadow-lg dark:ring-foreground/10"
