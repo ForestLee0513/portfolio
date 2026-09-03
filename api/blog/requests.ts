@@ -6,7 +6,7 @@ import {
 } from "@notionhq/client";
 
 import { notionClient } from "@/lib/notion";
-import { BLOG_PROPERTY_NAMES, NOTION_DATABASE_ID } from "./constants";
+import { BLOG_PROPERTY_NAMES, NOTION_BLOG_DATABASE_ID } from "./constants";
 import type { BlogPostDetail, BlogPostSummary } from "./types";
 
 // requests.ts는 raw async 함수만 둔다 (queries.ts 없음).
@@ -15,11 +15,15 @@ import type { BlogPostDetail, BlogPostSummary } from "./types";
 
 type Properties = PageObjectResponse["properties"];
 
-function pickTextProperty(properties: Properties, names: readonly string[]): string {
+function pickTextProperty(
+  properties: Properties,
+  names: readonly string[],
+): string {
   for (const name of names) {
     const prop = properties[name];
     if (!prop) continue;
-    if (prop.type === "rich_text") return prop.rich_text.map((t) => t.plain_text).join("");
+    if (prop.type === "rich_text")
+      return prop.rich_text.map((t) => t.plain_text).join("");
     if (prop.type === "select" && prop.select) return prop.select.name;
     if (prop.type === "url" && prop.url) return prop.url;
   }
@@ -29,12 +33,16 @@ function pickTextProperty(properties: Properties, names: readonly string[]): str
 function pickTags(properties: Properties, names: readonly string[]): string[] {
   for (const name of names) {
     const prop = properties[name];
-    if (prop?.type === "multi_select") return prop.multi_select.map((t) => t.name);
+    if (prop?.type === "multi_select")
+      return prop.multi_select.map((t) => t.name);
   }
   return [];
 }
 
-function pickDate(properties: Properties, names: readonly string[]): string | null {
+function pickDate(
+  properties: Properties,
+  names: readonly string[],
+): string | null {
   for (const name of names) {
     const prop = properties[name];
     if (prop?.type === "date" && prop.date) return prop.date.start;
@@ -42,7 +50,10 @@ function pickDate(properties: Properties, names: readonly string[]): string | nu
   return null;
 }
 
-function isPublished(properties: Properties, names: readonly string[]): boolean {
+function isPublished(
+  properties: Properties,
+  names: readonly string[],
+): boolean {
   for (const name of names) {
     const prop = properties[name];
     if (prop?.type === "checkbox") return prop.checkbox;
@@ -52,7 +63,9 @@ function isPublished(properties: Properties, names: readonly string[]): boolean 
 }
 
 function getTitle(properties: Properties): string {
-  const titleProp = Object.values(properties).find((prop) => prop.type === "title");
+  const titleProp = Object.values(properties).find(
+    (prop) => prop.type === "title",
+  );
   if (titleProp?.type === "title") {
     return titleProp.title.map((t) => t.plain_text).join("") || "제목 없음";
   }
@@ -64,19 +77,23 @@ function getTitle(properties: Properties): string {
 // 다음 빈 줄이 나올 때까지 그 뒤 마크다운(제목, 굵게, 링크 등)이 전부 raw 텍스트로 삼켜진다.
 // 태그 앞뒤에 빈 줄을 강제로 넣어 이후 내용이 다시 마크다운으로 파싱되게 한다.
 function normalizeNotionMarkdown(markdown: string): string {
-  return markdown
-    .replace(/(<(?:callout|columns|column)\b[^>]*>)/g, "\n\n$1\n\n")
-    .replace(/(<\/(?:callout|columns|column)>)/g, "\n\n$1\n\n")
-    .replace(/(<empty-block\b[^>]*\/?>(?:<\/empty-block>)?)/g, "\n\n$1\n\n")
-    // Notion이 콜아웃 내부 텍스트를 탭으로 들여쓰는데, 빈 줄 뒤 탭 들여쓰기는
-    // CommonMark에서 코드 블록으로 해석되므로 줄 시작의 탭을 모두 제거한다.
-    .replace(/^\t+/gm, "")
-    .replace(/\n{3,}/g, "\n\n");
+  return (
+    markdown
+      .replace(/(<(?:callout|columns|column)\b[^>]*>)/g, "\n\n$1\n\n")
+      .replace(/(<\/(?:callout|columns|column)>)/g, "\n\n$1\n\n")
+      .replace(/(<empty-block\b[^>]*\/?>(?:<\/empty-block>)?)/g, "\n\n$1\n\n")
+      // Notion이 콜아웃 내부 텍스트를 탭으로 들여쓰는데, 빈 줄 뒤 탭 들여쓰기는
+      // CommonMark에서 코드 블록으로 해석되므로 줄 시작의 탭을 모두 제거한다.
+      .replace(/^\t+/gm, "")
+      .replace(/\n{3,}/g, "\n\n")
+  );
 }
 
 function getCoverUrl(page: PageObjectResponse): string | null {
   if (!page.cover) return null;
-  return page.cover.type === "external" ? page.cover.external.url : page.cover.file.url;
+  return page.cover.type === "external"
+    ? page.cover.external.url
+    : page.cover.file.url;
 }
 
 function mapPageToSummary(page: PageObjectResponse): BlogPostSummary | null {
@@ -85,21 +102,24 @@ function mapPageToSummary(page: PageObjectResponse): BlogPostSummary | null {
   return {
     id: page.id.replace(/-/g, ""),
     title: getTitle(page.properties),
-    description: pickTextProperty(page.properties, BLOG_PROPERTY_NAMES.description),
+    description: pickTextProperty(
+      page.properties,
+      BLOG_PROPERTY_NAMES.description,
+    ),
     date: pickDate(page.properties, BLOG_PROPERTY_NAMES.date),
     tags: pickTags(page.properties, BLOG_PROPERTY_NAMES.tags),
     cover: getCoverUrl(page),
   };
 }
 
-// 설정값(NOTION_DATABASE_ID)은 데이터베이스 자체의 ID일 수도, 그 데이터베이스를
+// 설정값(NOTION_BLOG_DATABASE_ID)은 데이터베이스 자체의 ID일 수도, 그 데이터베이스를
 // 인라인으로 담고 있는 상위 페이지의 ID일 수도 있다 — 둘 다 그대로 동작하게 한다.
 async function resolveDatabaseId(): Promise<string | null> {
-  if (!NOTION_DATABASE_ID) return null;
+  if (!NOTION_BLOG_DATABASE_ID) return null;
 
   try {
     const database = await notionClient.databases.retrieve({
-      database_id: NOTION_DATABASE_ID,
+      database_id: NOTION_BLOG_DATABASE_ID,
     });
     if (isFullDatabase(database)) return database.id;
   } catch {
@@ -107,7 +127,7 @@ async function resolveDatabaseId(): Promise<string | null> {
   }
 
   const children = await notionClient.blocks.children.list({
-    block_id: NOTION_DATABASE_ID,
+    block_id: NOTION_BLOG_DATABASE_ID,
   });
   const childDatabase = children.results
     .filter(isFullBlock)
@@ -120,12 +140,16 @@ async function getDataSourceId(): Promise<string | null> {
   const databaseId = await resolveDatabaseId();
   if (!databaseId) return null;
 
-  const database = await notionClient.databases.retrieve({ database_id: databaseId });
+  const database = await notionClient.databases.retrieve({
+    database_id: databaseId,
+  });
   if (!isFullDatabase(database)) return null;
   return database.data_sources[0]?.id ?? null;
 }
 
-async function queryAllPosts(dataSourceId: string): Promise<PageObjectResponse[]> {
+async function queryAllPosts(
+  dataSourceId: string,
+): Promise<PageObjectResponse[]> {
   const pages: PageObjectResponse[] = [];
   let cursor: string | undefined;
 
@@ -164,13 +188,17 @@ export async function getBlogPost(id: string): Promise<BlogPostDetail | null> {
   try {
     const pageId = id.replace(/-/g, "");
 
-    const page = await notionClient.pages.retrieve({ page_id: pageId }).catch(() => null);
+    const page = await notionClient.pages
+      .retrieve({ page_id: pageId })
+      .catch(() => null);
     if (!page || !isFullPage(page)) return null;
 
     const summary = mapPageToSummary(page);
     if (!summary) return null;
 
-    const { markdown } = await notionClient.pages.retrieveMarkdown({ page_id: pageId });
+    const { markdown } = await notionClient.pages.retrieveMarkdown({
+      page_id: pageId,
+    });
 
     return { ...summary, markdown: normalizeNotionMarkdown(markdown) };
   } catch (error) {
