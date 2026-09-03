@@ -16,7 +16,7 @@ export default function Header() {
           href="/"
           className="flex items-center gap-2 font-heading text-base font-semibold tracking-tight text-foreground"
         >
-          <Logo className="size-6 text-primary" />
+          <Logo className="size-[42px] text-foreground" />
           {profile.name}
           <span className="ml-1 hidden text-sm font-normal text-muted-foreground sm:inline">
             {profile.role}
@@ -27,7 +27,11 @@ export default function Header() {
           <NavLinks />
           <div className="mx-1 h-5 w-px bg-border" />
           <ThemeToggle />
-          <Button size="sm" nativeButton={false} render={<Link href="/contact" />}>
+          <Button
+            size="sm"
+            nativeButton={false}
+            render={<Link href="/contact" />}
+          >
             커피챗 제안하기
           </Button>
         </div>
