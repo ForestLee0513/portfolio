@@ -1,5 +1,5 @@
-import LandingHero from "@/components/LandingHero";
+import Home from "@/components/screens/Home";
 
-export default function Home() {
-  return <LandingHero />;
+export default function Page() {
+  return <Home />;
 }
