@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { profile } from "@/lib/data/profile";
+import Logo from "@/components/common/Logo";
 import NavLinks from "./parts/NavLinks";
 import MobileNav from "./parts/MobileNav";
 import ThemeToggle from "./parts/ThemeToggle";
@@ -13,10 +14,11 @@ export default function Header() {
       <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-5 sm:px-8">
         <Link
           href="/"
-          className="font-heading text-base font-semibold tracking-tight text-foreground"
+          className="flex items-center gap-2 font-heading text-base font-semibold tracking-tight text-foreground"
         >
+          <Logo className="size-6 text-primary" />
           {profile.name}
-          <span className="ml-2 hidden text-sm font-normal text-muted-foreground sm:inline">
+          <span className="ml-1 hidden text-sm font-normal text-muted-foreground sm:inline">
             {profile.role}
           </span>
         </Link>
