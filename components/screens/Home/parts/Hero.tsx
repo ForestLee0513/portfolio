@@ -22,6 +22,12 @@ export default function Hero() {
         animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.7, 0.4] }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />
+      {/* 하단 블롭이 overflow-hidden 경계에서 뚝 잘려 보이지 않도록 배경색으로 자연스럽게 페이드아웃
+          — 절반 지점까지는 블롭 색을 그대로 유지하고, 나머지 구간에서만 배경색으로 수렴시켜 흐려 보이지 않게 한다 */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(to_bottom,transparent_0%,transparent_45%,var(--background)_100%)] sm:h-56"
+      />
 
       <div className="relative mx-auto flex max-w-5xl flex-col items-start">
         <motion.span
