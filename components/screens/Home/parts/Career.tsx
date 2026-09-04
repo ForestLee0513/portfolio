@@ -8,7 +8,7 @@ import { career, education } from "@/lib/data/profile";
 export default function Career() {
   return (
     <section className="px-5 py-20 sm:px-8 sm:py-28">
-      <div className="">
+      <div className="mx-auto max-w-5xl flex flex-col">
         <motion.h2
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
