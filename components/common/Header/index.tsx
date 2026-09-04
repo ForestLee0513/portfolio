@@ -5,6 +5,7 @@ import Logo from "@/components/common/Logo";
 import NavLinks from "./parts/NavLinks";
 import MobileNav from "./parts/MobileNav";
 import ThemeToggle from "./parts/ThemeToggle";
+import DownloadMenu from "@/components/common/PdfDownload/parts/DownloadMenu";
 
 // 모든 라우트에서 공유하는 상단 내비게이션. 서버 컴포넌트로 두고
 // 상태가 필요한 조각(NavLinks/MobileNav/ThemeToggle)만 클라이언트로 분리한다.
@@ -26,6 +27,7 @@ export default function Header() {
         <div className="hidden items-center gap-2 md:flex">
           <NavLinks />
           <div className="mx-1 h-5 w-px bg-border" />
+          <DownloadMenu />
           <ThemeToggle />
           <Button
             size="sm"

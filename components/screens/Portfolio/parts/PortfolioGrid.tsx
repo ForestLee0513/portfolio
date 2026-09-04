@@ -1,6 +1,9 @@
 "use client";
 
 import { use, useMemo } from "react";
+import { IconDownload } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
+import { usePdfDownload } from "@/components/common/PdfDownload/hooks/usePdfDownload";
 import type { PortfolioProject } from "@/api/portfolio/types";
 import type { Filter } from "./FilterTabs";
 import ProjectCard from "./ProjectCard";
@@ -15,6 +18,7 @@ export default function PortfolioGrid({
   filter: Filter;
 }) {
   const projects = use(projectsPromise);
+  const { downloadPortfolio } = usePdfDownload();
 
   const filtered = useMemo(
     () => (filter === "전체" ? projects : projects.filter((p) => p.category === filter)),
@@ -33,10 +37,23 @@ export default function PortfolioGrid({
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-5 sm:grid-cols-2">
-      {filtered.map((project, index) => (
-        <ProjectCard key={project.id} project={project} index={index} />
-      ))}
+    <div className="mx-auto max-w-5xl">
+      <div className="mb-5 flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => downloadPortfolio(projects)}
+        >
+          <IconDownload data-icon="inline-start" />
+          포트폴리오 PDF 다운로드
+        </Button>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        {filtered.map((project, index) => (
+          <ProjectCard key={project.id} project={project} index={index} />
+        ))}
+      </div>
     </div>
   );
 }

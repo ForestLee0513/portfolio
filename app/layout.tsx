@@ -4,6 +4,7 @@ import { pretendard, pretendardJP } from "@/styles/fonts";
 import UIProvider from "@/providers/UIProvider";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
+import PdfDownloadProvider from "@/components/common/PdfDownload";
 import { Toaster } from "@/components/ui/sonner";
 import { profile } from "@/lib/data/profile";
 import "@/styles/globals.css";
@@ -34,12 +35,23 @@ export default function RootLayout({
         pretendardJP.variable
       )}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      {/*
+        print:block — body의 flex 레이아웃을 그대로 두면 인쇄 시 display:none 처리된
+        형제 요소(Header/main/Footer 래퍼)가 크로미움의 flex 페이지네이션 버그로 인해
+        빈 첫 페이지를 만들어낸다. 인쇄 중에는 block으로 되돌려 이 문제를 피한다.
+      */}
+      <body className="min-h-full flex flex-col font-sans print:block">
         <UIProvider>
-          <Header />
-          <main className="flex flex-1 flex-col">{children}</main>
-          <Footer />
-          <Toaster position="bottom-center" />
+          <PdfDownloadProvider>
+            <div className="flex flex-1 flex-col print:hidden">
+              <Header />
+              <main className="flex flex-1 flex-col">{children}</main>
+              <Footer />
+            </div>
+            <div className="print:hidden">
+              <Toaster position="bottom-center" />
+            </div>
+          </PdfDownloadProvider>
         </UIProvider>
       </body>
     </html>

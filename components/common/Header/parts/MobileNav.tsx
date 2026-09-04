@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { IconMenu2 } from "@tabler/icons-react";
+import { IconFileDescription, IconFileText, IconMenu2 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -11,10 +11,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { usePdfDownload } from "@/components/common/PdfDownload/hooks/usePdfDownload";
 import { NAV_ITEMS } from "./NavLinks";
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+  const { downloadResume, downloadCareer } = usePdfDownload();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -46,6 +48,32 @@ export default function MobileNav() {
               {item.label}
             </Link>
           ))}
+
+          <div className="mt-2 flex flex-col gap-1 border-t border-border pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                downloadResume();
+              }}
+              className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-secondary"
+            >
+              <IconFileText className="size-4" />
+              이력서 다운로드
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                downloadCareer();
+              }}
+              className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-secondary"
+            >
+              <IconFileDescription className="size-4" />
+              경력기술서 다운로드
+            </button>
+          </div>
+
           <Link
             href="/contact"
             onClick={() => setOpen(false)}
