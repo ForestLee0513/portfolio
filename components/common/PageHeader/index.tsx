@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
 
 // Skills/Portfolio/Contact/Blog 등 서브 페이지가 공유하는 상단 타이틀 영역.
 export default function PageHeader({

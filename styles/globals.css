@@ -148,4 +148,12 @@
     height: auto;
     min-height: 0;
   }
+
+  /* 드롭다운/셀렉트/팝오버/다이얼로그 등은 Portal로 document.body에 직접 렌더링되어
+     print:hidden 래퍼 밖에 위치한다. 다운로드 직후 닫힘 애니메이션이 미처 끝나지 않은
+     채로 인쇄되면 메뉴 팝업이 PDF 안에 그대로 찍히므로, 모든 팝업류를 인쇄에서 제외한다.
+     (PdfDownload의 문서들은 shadcn UI 프리미티브를 쓰지 않아 이 셀렉터와 겹치지 않는다.) */
+  [data-slot$="-content"] {
+    display: none !important;
+  }
 }
