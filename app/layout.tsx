@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { pretendard, pretendardJP } from "@/styles/fonts";
 import UIProvider from "@/providers/UIProvider";
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   // 폰트 변수를 <html>에 부착한다 → globals.css의 @theme가 font-sans/font-mono 토큰으로 승격.
   // suppressHydrationWarning: next-themes가 클라이언트에서 class="dark"를 주입하는 과정에서

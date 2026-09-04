@@ -4,6 +4,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 UI copy and code comments are written in **Korean**. Path alias: `@/*` → repo root.
 
+Prefer named imports over namespace imports wherever a library exposes them — write `import { useState, useEffect } from 'react'` instead of `import * as React from 'react'`, and call the named exports directly rather than through a namespace prefix (e.g. `React.useState`). React is just one example; apply this to any library. Exception: `components/ui/` (shadcn CLI-generated files) is left as the CLI emits it.
+
 ## Commands
 
 Package manager is **yarn** (yarn.lock present).
