@@ -26,7 +26,14 @@ function normalizeNotionMarkdown(markdown: string): string {
   return markdown
     .replace(/(<(?:callout|columns|column)\b[^>]*>)/g, "\n\n$1\n\n")
     .replace(/(<\/(?:callout|columns|column)>)/g, "\n\n$1\n\n")
-    .replace(/(<empty-block\b[^>]*\/?>(?:<\/empty-block>)?)/g, "\n\n$1\n\n")
+    // <empty-block/> 같은 self-closing 표기는 rehype-raw가 쓰는 HTML 파서(parse5)에서
+    // void 요소가 아닌 커스텀 태그의 "/"를 무시하고 여는 태그로만 처리한다. 그러면 이 태그는
+    // 이후 문서 끝까지의 모든 형제 콘텐츠를 자기 children으로 삼켜버리고, empty-block 컴포넌트가
+    // children을 렌더링하지 않아 그 뒤 본문 전체가 사라진다. 항상 완전한 open+close 쌍으로 바꿔
+    // 태그가 그 자리에서 확실히 닫히게 한다. 여는/닫는 태그를 한 줄에 붙여 쓰면 CommonMark가
+    // 이를 문단(<p>) 안의 인라인 HTML로 취급해 <p> 안에 <div>가 들어가는 잘못된 HTML 중첩(hydration
+    // 에러의 원인)이 생기므로, 각 태그를 별도 줄에 두어 HTML 블록으로 파싱되게 한다.
+    .replace(/<empty-block\b[^>]*\/?>(?:<\/empty-block>)?/g, "\n\n<empty-block>\n</empty-block>\n\n")
     // Notion이 콜아웃 내부 텍스트를 탭으로 들여쓰는데, 빈 줄 뒤 탭 들여쓰기는
     // CommonMark에서 코드 블록으로 해석되므로 줄 시작의 탭을 모두 제거한다.
     .replace(/^\t+/gm, "")
