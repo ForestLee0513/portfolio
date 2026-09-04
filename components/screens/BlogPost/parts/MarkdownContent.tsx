@@ -9,7 +9,7 @@ import rehypeRaw from "rehype-raw";
 function Callout({ icon, children }: { icon?: string; children?: ReactNode }) {
   return (
     <div className="my-6 flex gap-3 rounded-2xl bg-secondary/70 p-4 text-sm leading-6 text-foreground/90">
-      {icon && <span className="shrink-0 text-lg leading-none">{icon}</span>}
+      {icon && <span className="shrink-0 text-lg">{icon}</span>}
       <div className="flex-1 [&>p]:my-0">{children}</div>
     </div>
   );
@@ -21,7 +21,10 @@ function Columns({ children }: { children?: ReactNode }) {
 
 // react-markdown의 Components 타입은 표준 HTML 태그 키만 허용하므로,
 // Notion 전용 커스텀 태그는 별도로 만들고 마지막에 합쳐서 캐스팅한다.
-const customComponents: Record<string, ComponentType<{ children?: ReactNode; icon?: string }>> = {
+const customComponents: Record<
+  string,
+  ComponentType<{ children?: ReactNode; icon?: string }>
+> = {
   callout: Callout,
   columns: Columns,
   column: ({ children }) => <div>{children}</div>,
@@ -35,12 +38,18 @@ const htmlComponents: Components = {
     </h2>
   ),
   h2: ({ children }) => (
-    <h3 className="mt-9 mb-3 text-xl font-bold tracking-tight text-foreground">{children}</h3>
+    <h3 className="mt-9 mb-3 text-xl font-bold tracking-tight text-foreground">
+      {children}
+    </h3>
   ),
   h3: ({ children }) => (
-    <h4 className="mt-7 mb-2 text-lg font-semibold text-foreground">{children}</h4>
+    <h4 className="mt-7 mb-2 text-lg font-semibold text-foreground">
+      {children}
+    </h4>
   ),
-  p: ({ children }) => <p className="my-4 text-base leading-8 text-foreground/90">{children}</p>,
+  p: ({ children }) => (
+    <p className="my-4 text-base leading-8 text-foreground/90">{children}</p>
+  ),
   a: ({ href, children }) => (
     <a
       href={href}
@@ -99,7 +108,9 @@ const htmlComponents: Components = {
     </th>
   ),
   td: ({ children }) => (
-    <td className="border-b border-border/60 px-4 py-2 text-foreground/90">{children}</td>
+    <td className="border-b border-border/60 px-4 py-2 text-foreground/90">
+      {children}
+    </td>
   ),
 };
 
@@ -108,7 +119,11 @@ const components = { ...htmlComponents, ...customComponents } as Components;
 export default function MarkdownContent({ markdown }: { markdown: string }) {
   return (
     <div className="max-w-none">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} components={components}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+        components={components}
+      >
         {markdown}
       </ReactMarkdown>
     </div>
