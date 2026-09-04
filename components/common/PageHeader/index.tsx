@@ -6,7 +6,6 @@ export default function PageHeader({
   eyebrow,
   title,
   description,
-  className,
   children,
 }: {
   eyebrow: string;
@@ -16,19 +15,21 @@ export default function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className={cn(" px-5 pt-16 pb-4 sm:px-8 sm:pt-24", className)}>
-      <p className="text-xs font-semibold tracking-widest text-primary uppercase">
-        {eyebrow}
-      </p>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-        {title}
-      </h1>
-      {description && (
-        <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
-          {description}
+    <div className="px-5 pt-16 pb-4 sm:px-8 sm:pt-24">
+      <div className="mx-auto max-w-5xl flex flex-col">
+        <p className="text-xs font-semibold tracking-widest text-primary uppercase">
+          {eyebrow}
         </p>
-      )}
-      {children}
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {title}
+        </h1>
+        {description && (
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
+            {description}
+          </p>
+        )}
+        {children}
+      </div>
     </div>
   );
 }
