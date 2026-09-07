@@ -58,12 +58,12 @@ export async function getBlogPosts(): Promise<BlogPostSummary[]> {
     const dataSourceId = await getDataSourceId(NOTION_BLOG_DATABASE_ID);
     if (!dataSourceId) return [];
 
-    const pages = await queryAllPages(dataSourceId);
-    const posts = pages
-      .map(mapPageToSummary)
-      .filter((post): post is BlogPostSummary => Boolean(post));
-
-    return posts.sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+    // Notion 웹 UI의 뷰 정렬은 그 뷰에만 저장되는 값이라 API 조회에는 반영되지 않아,
+    // 쿼리 시점에 sorts로 명시해 최신 글이 먼저 오는 상태로 받아온다.
+    const pages = await queryAllPages(dataSourceId, [
+      { property: BLOG_PROPERTY_NAMES.date[0], direction: "descending" },
+    ]);
+    return pages.map(mapPageToSummary).filter((post): post is BlogPostSummary => Boolean(post));
   } catch (error) {
     // NOTION_API_KEY 미설정, 데이터베이스 미공유 등으로 실패해도 화면은 빈 목록으로 정상 렌더링한다.
     console.error("[blog] Notion 게시글 목록을 불러오지 못했습니다.", error);
