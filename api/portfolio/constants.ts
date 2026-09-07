@@ -12,5 +12,4 @@ export const PORTFOLIO_PROPERTY_NAMES = {
   stack: ["Stack", "기술 스택", "Tech"],
   links: ["Links", "링크"],
   published: ["Public", "공개", "게시"],
-  order: ["Order", "순서"],
 } as const;

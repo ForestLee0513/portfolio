@@ -75,6 +75,20 @@ export function pickDate(properties: Properties, names: readonly string[]): stri
   return null;
 }
 
+// 기간(Period)처럼 시작·종료가 있는 date 속성 전체를 뽑는다. end가 없으면 진행중인 기간이다.
+export function pickDateRange(
+  properties: Properties,
+  names: readonly string[]
+): { start: string | null; end: string | null } {
+  for (const name of names) {
+    const prop = properties[name];
+    if (prop?.type === "date" && prop.date) {
+      return { start: prop.date.start, end: prop.date.end };
+    }
+  }
+  return { start: null, end: null };
+}
+
 export function pickCheckbox(
   properties: Properties,
   names: readonly string[],
