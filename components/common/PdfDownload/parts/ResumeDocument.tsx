@@ -25,7 +25,9 @@ export default function ResumeDocument() {
       </PrintSection>
 
       <PrintSection title={`경력 사항 (총 ${profile.totalCareer})`}>
-        <div className="flex flex-col gap-5">
+        {/* flex는 크로미움 인쇄 시 컨테이너 높이가 한 페이지를 넘으면 다음 페이지로
+            흘리지 못하고 내용을 잘라버리는 경우가 있어, 일반 블록 흐름(space-y)으로 구성한다. */}
+        <div className="space-y-5">
           {career.map((entry) => (
             <div key={entry.company} className="break-inside-avoid">
               <div className="flex flex-wrap items-baseline justify-between gap-x-3">
@@ -42,7 +44,7 @@ export default function ResumeDocument() {
                 </span>
               </div>
 
-              <ul className="mt-2.5 flex flex-col gap-2">
+              <ul className="mt-2.5 space-y-2">
                 {entry.projects.map((project) => (
                   <li key={project.name} className="text-xs leading-5 text-neutral-600">
                     <span className="font-medium text-neutral-800">

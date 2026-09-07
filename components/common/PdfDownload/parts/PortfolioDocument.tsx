@@ -10,7 +10,9 @@ export default function PortfolioDocument({
   return (
     <PrintPage documentTitle="Portfolio">
       <PrintSection title={`프로젝트 (${projects.length}건)`}>
-        <div className="flex flex-col gap-4">
+        {/* flex는 크로미움 인쇄 시 컨테이너 높이가 한 페이지를 넘으면 다음 페이지로
+            흘리지 못하고 내용을 잘라버리는 경우가 있어, 일반 블록 흐름(space-y)으로 구성한다. */}
+        <div className="space-y-4">
           {projects.map((project) => (
             <div
               key={project.id}
@@ -34,7 +36,7 @@ export default function PortfolioDocument({
               </p>
 
               {project.highlights.length > 0 && (
-                <ul className="mt-2 flex flex-col gap-1">
+                <ul className="mt-2 space-y-1">
                   {project.highlights.map((highlight) => (
                     <li
                       key={highlight}

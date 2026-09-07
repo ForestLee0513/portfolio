@@ -21,7 +21,9 @@ export default function CareerDocument() {
             {entry.current && " · 재직중"}
           </p>
 
-          <div className="mt-4 flex flex-col gap-4">
+          {/* flex는 크로미움 인쇄 시 컨테이너 높이가 한 페이지를 넘으면 다음 페이지로
+              흘리지 못하고 내용을 잘라버리는 경우가 있어, 일반 블록 흐름(space-y)으로 구성한다. */}
+          <div className="mt-4 space-y-4">
             {entry.projects.map((project) => (
               <div
                 key={project.name}
