@@ -3,6 +3,7 @@
 import { use, useMemo } from "react";
 import { IconDownload } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { usePdfDownload } from "@/components/common/PdfDownload/hooks/usePdfDownload";
 import type { PortfolioProject } from "@/api/portfolio/types";
 import type { Filter } from "./FilterTabs";
@@ -18,7 +19,8 @@ export default function PortfolioGrid({
   filter: Filter;
 }) {
   const projects = use(projectsPromise);
-  const { downloadPortfolio } = usePdfDownload();
+  const { downloadPortfolio, loadingType } = usePdfDownload();
+  const isLoading = loadingType !== null;
 
   const filtered = useMemo(
     () => (filter === "전체" ? projects : projects.filter((p) => p.category === filter)),
@@ -42,9 +44,10 @@ export default function PortfolioGrid({
         <Button
           variant="outline"
           size="sm"
+          disabled={isLoading}
           onClick={() => downloadPortfolio(projects)}
         >
-          <IconDownload data-icon="inline-start" />
+          {isLoading ? <Spinner data-icon="inline-start" /> : <IconDownload data-icon="inline-start" />}
           포트폴리오 PDF 다운로드
         </Button>
       </div>

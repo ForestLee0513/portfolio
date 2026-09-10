@@ -12,4 +12,6 @@ export interface PdfDownloadContextValue {
   downloadResume: () => void;
   downloadCareer: () => void;
   downloadPortfolio: (projects: PortfolioProject[]) => void;
+  /** 현재 준비·인쇄 중인 문서 종류. 데이터 로딩 시작부터 인쇄 완료(afterprint)까지 유지된다. */
+  loadingType: PdfDocumentType | null;
 }

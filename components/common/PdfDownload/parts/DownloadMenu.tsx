@@ -2,6 +2,7 @@
 
 import { IconDownload, IconFileDescription, IconFileText } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,12 +14,13 @@ import { usePdfDownload } from "../hooks/usePdfDownload";
 // 이력서/경력기술서는 어느 페이지에서나 접근 가능해야 해서 Header(글로벌 내비게이션)에 둔다.
 // 포트폴리오 PDF는 Notion에서 가져온 데이터가 필요해 /portfolio 페이지 안에 별도로 둔다.
 export default function DownloadMenu() {
-  const { downloadResume, downloadCareer } = usePdfDownload();
+  const { downloadResume, downloadCareer, loadingType } = usePdfDownload();
+  const isLoading = loadingType !== null;
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
-        <IconDownload data-icon="inline-start" />
+      <DropdownMenuTrigger render={<Button variant="outline" size="sm" disabled={isLoading} />}>
+        {isLoading ? <Spinner data-icon="inline-start" /> : <IconDownload data-icon="inline-start" />}
         이력서 받기
       </DropdownMenuTrigger>
       {/*
@@ -26,12 +28,12 @@ export default function DownloadMenu() {
         좁은 트리거에 이 메뉴를 달면 항목 문구가 줄바꿈된다. 내용 길이에 맞춰 넓힌다.
       */}
       <DropdownMenuContent align="end" className="w-max min-w-56">
-        <DropdownMenuItem onClick={downloadResume}>
-          <IconFileText />
+        <DropdownMenuItem onClick={downloadResume} disabled={isLoading}>
+          {loadingType === "resume" ? <Spinner /> : <IconFileText />}
           이력서 (경력 · 자기소개)
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={downloadCareer}>
-          <IconFileDescription />
+        <DropdownMenuItem onClick={downloadCareer} disabled={isLoading}>
+          {loadingType === "career" ? <Spinner /> : <IconFileDescription />}
           경력기술서
         </DropdownMenuItem>
       </DropdownMenuContent>

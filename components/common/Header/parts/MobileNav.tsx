@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { IconFileDescription, IconFileText, IconMenu2 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Sheet,
   SheetContent,
@@ -16,7 +17,16 @@ import { NAV_ITEMS } from "./NavLinks";
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
-  const { downloadResume, downloadCareer } = usePdfDownload();
+  const { downloadResume, downloadCareer, loadingType } = usePdfDownload();
+  const isLoading = loadingType !== null;
+
+  // 다운로드 버튼은 클릭 즉시 시트를 닫지 않고 로딩 상태를 보여준 뒤,
+  // 인쇄 준비가 끝나면(loadingType이 null로 돌아오면) 자동으로 닫는다.
+  const wasLoading = useRef(false);
+  useEffect(() => {
+    if (wasLoading.current && !isLoading) setOpen(false);
+    wasLoading.current = isLoading;
+  }, [isLoading]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -52,24 +62,28 @@ export default function MobileNav() {
           <div className="mt-2 flex flex-col gap-1 border-t border-border pt-2">
             <button
               type="button"
-              onClick={() => {
-                setOpen(false);
-                downloadResume();
-              }}
-              className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-secondary"
+              disabled={isLoading}
+              onClick={downloadResume}
+              className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-secondary disabled:pointer-events-none disabled:opacity-50"
             >
-              <IconFileText className="size-4" />
+              {loadingType === "resume" ? (
+                <Spinner className="size-4" />
+              ) : (
+                <IconFileText className="size-4" />
+              )}
               이력서 다운로드
             </button>
             <button
               type="button"
-              onClick={() => {
-                setOpen(false);
-                downloadCareer();
-              }}
-              className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-secondary"
+              disabled={isLoading}
+              onClick={downloadCareer}
+              className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-secondary disabled:pointer-events-none disabled:opacity-50"
             >
-              <IconFileDescription className="size-4" />
+              {loadingType === "career" ? (
+                <Spinner className="size-4" />
+              ) : (
+                <IconFileDescription className="size-4" />
+              )}
               경력기술서 다운로드
             </button>
           </div>
