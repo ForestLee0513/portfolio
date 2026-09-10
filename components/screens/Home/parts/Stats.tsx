@@ -6,7 +6,7 @@ import { profile } from "@/lib/data/profile";
 export default function Stats() {
   return (
     <section className="px-5 sm:px-8 pt-20">
-      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
         {profile.stats.map((stat, index) => (
           <motion.div
             key={stat.label}

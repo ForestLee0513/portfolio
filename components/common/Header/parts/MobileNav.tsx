@@ -37,7 +37,7 @@ export default function MobileNav() {
             variant="ghost"
             size="icon-sm"
             aria-label="메뉴 열기"
-            className="md:hidden"
+            className="lg:hidden"
           />
         }
       >

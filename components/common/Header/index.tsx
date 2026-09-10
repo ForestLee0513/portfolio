@@ -18,13 +18,15 @@ export default function Header() {
           className="flex items-center gap-2 font-heading text-base font-semibold tracking-tight text-foreground"
         >
           <Logo className="size-[42px] text-foreground" />
-          {profile.name}
-          <span className="ml-1 hidden text-sm font-normal text-muted-foreground sm:inline">
-            {profile.role}
-          </span>
+          <div className="flex flex-col">
+            {profile.name}
+            <span className="text-sm font-normal text-muted-foreground">
+              {profile.role}
+            </span>
+          </div>
         </Link>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           <NavLinks />
           <div className="mx-1 h-5 w-px bg-border" />
           <DownloadMenu />
@@ -38,7 +40,7 @@ export default function Header() {
           </Button>
         </div>
 
-        <div className="flex items-center gap-1 md:hidden">
+        <div className="flex items-center gap-1 lg:hidden">
           <ThemeToggle />
           <MobileNav />
         </div>
