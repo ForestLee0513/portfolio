@@ -1,92 +1,88 @@
 import { career, education, profile } from "@/lib/data/profile";
-import PrintPage, { PrintSection } from "./PrintPage";
+import type { PortfolioProject } from "@/api/portfolio/types";
+import PdfSheet, { PrintSection } from "./PrintPage";
+
+// 1쪽 이력서에 담을 핵심 기술만 추린 목록. Skills 페이지 전체 목록과 달리
+// documents/generate.mjs 제출용 이력서와 동일하게 의도적으로 축약한다.
+const CORE_SKILLS = [
+  "TypeScript",
+  "React",
+  "Next.js",
+  "React Native",
+  "Redux-Saga",
+  "TanStack Query",
+  "TailwindCSS",
+];
+const EXTENDED_SKILLS = ["Python", "FastAPI", "Supabase", "Redis", "AWS S3·CloudFront", "GitHub Actions"];
+
+function resumeProjectSummary(staticSummary: string, detail?: PortfolioProject) {
+  if (detail?.outcomes && detail.outcomes.length > 0) return detail.outcomes.join(" ");
+  return detail?.summary ?? staticSummary;
+}
 
 // 이력서 = 경력 요약 + 자기소개. 홈(이력) 페이지의 내용을 문서 형식으로 재구성한다.
-export default function ResumeDocument() {
+export default function ResumeDocument({ projects = [] }: { projects?: PortfolioProject[] } = {}) {
+  const projectByName = new Map(projects.map((project) => [project.name, project]));
+  const personalProjects = projects.filter((project) => project.category === "개인");
+
   return (
-    <PrintPage documentTitle="Resume">
-      <PrintSection title="자기소개">
-        <p className="text-sm leading-6 text-neutral-700">{profile.summary}</p>
-      </PrintSection>
+    <PdfSheet documentTitle="이력서" eyebrow="이력서" tagline resumeSheet pageIndex={1} pageTotal={1}>
+      <p className="pdf-intro">{profile.summary}</p>
 
-      <PrintSection title="핵심 역량">
-        <div className="grid grid-cols-3 gap-4">
-          {profile.highlights.map((highlight) => (
-            <div key={highlight.title}>
-              <p className="text-sm font-semibold text-neutral-900">
-                {highlight.title}
-              </p>
-              <p className="mt-1.5 text-xs leading-5 text-neutral-500">
-                {highlight.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </PrintSection>
+      <div className="pdf-metrics">
+        {profile.stats.map((stat) => (
+          <div key={stat.label}>
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+            <small>{stat.detail}</small>
+          </div>
+        ))}
+      </div>
 
-      <PrintSection title={`경력 사항 (총 ${profile.totalCareer})`}>
-        {/* flex는 크로미움 인쇄 시 컨테이너 높이가 한 페이지를 넘으면 다음 페이지로
-            흘리지 못하고 내용을 잘라버리는 경우가 있어, 일반 블록 흐름(space-y)으로 구성한다. */}
-        <div className="space-y-5">
-          {career.map((entry) => (
-            <div key={entry.company} className="break-inside-avoid">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                <h3 className="text-sm font-bold text-neutral-900">
-                  {entry.company}
-                  {entry.current && (
-                    <span className="ml-2 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
-                      재직중
-                    </span>
-                  )}
-                </h3>
-                <span className="text-xs text-neutral-500">
-                  {entry.period} · {entry.employment} · {entry.role}
-                </span>
+      <PrintSection title={`경력 · ${profile.totalCareer}`}>
+        {career.map((entry) => (
+          <article key={entry.company} className="pdf-career-summary">
+            <h3>
+              {entry.company}{" "}
+              <small>
+                {entry.period} · {entry.employment} · {entry.role}
+              </small>
+            </h3>
+            {entry.projects.map((project) => (
+              <div key={project.name} className="pdf-resume-project">
+                <b>{project.name}</b>
+                <span>{project.period}</span>
+                <p>{resumeProjectSummary(project.summary, projectByName.get(project.name))}</p>
               </div>
-
-              <ul className="mt-2.5 space-y-2">
-                {entry.projects.map((project) => (
-                  <li key={project.name} className="text-xs leading-5 text-neutral-600">
-                    <span className="font-medium text-neutral-800">
-                      {project.name}
-                    </span>
-                    <span className="text-neutral-400"> · {project.period}</span>
-                    <br />
-                    {project.summary}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+            ))}
+          </article>
+        ))}
       </PrintSection>
 
-      <PrintSection title="학력">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-          <h3 className="text-sm font-bold text-neutral-900">
+      <PrintSection title="개인 프로젝트">
+        {personalProjects.map((project) => (
+          <div key={project.id} className="pdf-resume-project">
+            <b>{project.name}</b>
+            <span>{project.period}</span>
+            <p>{project.summary}</p>
+          </div>
+        ))}
+      </PrintSection>
+
+      <PrintSection title="기술 · 학력">
+        <p>
+          <b>핵심 기술</b> · {CORE_SKILLS.join(", ")}
+        </p>
+        <p>
+          <b>확장 경험</b> · {EXTENDED_SKILLS.join(", ")}
+        </p>
+        <p className="pdf-education">
+          <b>
             {education.school} · {education.major}
-          </h3>
-          <span className="text-xs text-neutral-500">
-            {education.period} · {education.status}
-          </span>
-        </div>
-        <p className="mt-2 text-xs leading-5 text-neutral-600">
-          {education.description}
+          </b>{" "}
+          / {education.period} · {education.status}
         </p>
       </PrintSection>
-
-      <PrintSection title="주요 성과 지표">
-        <div className="grid grid-cols-4 gap-4">
-          {profile.stats.map((stat) => (
-            <div key={stat.label}>
-              <p className="text-lg font-bold text-emerald-700">{stat.value}</p>
-              <p className="mt-0.5 text-[11px] leading-4 text-neutral-500">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </PrintSection>
-    </PrintPage>
+    </PdfSheet>
   );
 }

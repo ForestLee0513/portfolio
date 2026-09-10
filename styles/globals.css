@@ -134,11 +134,13 @@
 }
 
 /* 이력서/경력기술서/포트폴리오 PDF 다운로드용 인쇄 페이지 설정.
-   내용 자체는 PdfDownload의 각 문서가 리터럴 라이트 컬러만 사용해 라이트모드를 고정한다. */
+   documents/generate.mjs가 만드는 제출용 A4 문서와 동일한 디자인(색상·타이포·여백)을
+   그대로 이식한 것으로, 값 하나하나를 그 CSS와 맞춘다. 내용 자체는 PdfDownload의 각
+   문서가 리터럴 라이트 컬러만 사용해 다크모드로 보고 있어도 인쇄 결과는 라이트모드로 고정한다. */
 @media print {
   @page {
     size: A4;
-    margin: 14mm 16mm;
+    margin: 0;
   }
 
   /* html/body의 h-full·min-h-full(=100%)가 인쇄 페이지 높이 기준으로 계산되면서
@@ -155,5 +157,334 @@
      (PdfDownload의 문서들은 shadcn UI 프리미티브를 쓰지 않아 이 셀렉터와 겹치지 않는다.) */
   [data-slot$="-content"] {
     display: none !important;
+  }
+
+  #pdf-print-root {
+    background: #fff;
+  }
+
+  #pdf-print-root .pdf-sheet {
+    width: 210mm;
+    min-height: 297mm;
+    background: #fff !important;
+    color: #1d2c29 !important;
+    margin: 0;
+    padding: 16mm 17mm 19mm;
+    position: relative;
+    break-after: page;
+    font-family: var(--font-pretendard), "Apple SD Gothic Neo", sans-serif;
+    font-size: 9.6pt;
+    line-height: 1.64;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #pdf-print-root > .pdf-sheet:last-child {
+    break-after: auto;
+  }
+  #pdf-print-root .pdf-sheet * {
+    box-sizing: border-box;
+  }
+
+  #pdf-print-root .pdf-sheet header {
+    border-top: 4px solid #186653;
+    border-bottom: 1px solid #d9e4df;
+    padding: 13px 0 15px;
+    margin-bottom: 16px;
+  }
+  #pdf-print-root .pdf-sheet header.pdf-compact {
+    padding: 9px 0 12px;
+  }
+  #pdf-print-root .pdf-eyebrow {
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    color: #216957 !important;
+  }
+  #pdf-print-root .pdf-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  #pdf-print-root .pdf-sheet h1 {
+    font-size: 28pt;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -1px;
+    margin: 7px 0;
+    color: #1d2c29 !important;
+  }
+  #pdf-print-root header.pdf-compact h1 {
+    font-size: 21pt;
+  }
+  #pdf-print-root .pdf-sheet h1 span {
+    font-size: 12pt;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: #526760 !important;
+    margin-left: 8px;
+  }
+  #pdf-print-root header.pdf-compact h1 span {
+    font-size: 10pt;
+  }
+  #pdf-print-root .pdf-edition {
+    font-size: 9pt;
+    color: #75857e !important;
+  }
+  #pdf-print-root .pdf-tagline {
+    font-size: 10.7pt;
+    font-weight: 600;
+    margin: 5px 0 10px;
+    color: #1d2c29 !important;
+  }
+  #pdf-print-root .pdf-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 15px;
+    font-size: 8pt;
+    color: #536961 !important;
+  }
+  #pdf-print-root .pdf-sheet a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #pdf-print-root .pdf-sheet p {
+    margin: 6px 0;
+  }
+  #pdf-print-root .pdf-sheet h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 13px 0 6px;
+    color: #165b4b !important;
+    letter-spacing: -0.2px;
+    break-after: avoid;
+  }
+  #pdf-print-root .pdf-sheet h3 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    margin: 9px 0 5px;
+    color: #1d2c29 !important;
+  }
+  #pdf-print-root .pdf-sheet h3 small {
+    display: block;
+    font-size: 8pt;
+    font-weight: 400;
+    color: #6b7c74 !important;
+    margin-top: 2px;
+  }
+  #pdf-print-root .pdf-intro {
+    font-size: 10pt;
+    line-height: 1.7;
+  }
+
+  #pdf-print-root .pdf-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    background: #eef6f2 !important;
+    padding: 8px 12px;
+    margin: 9px 0;
+  }
+  #pdf-print-root .pdf-metrics strong {
+    display: block;
+    font-size: 17pt;
+    color: #186653 !important;
+    line-height: 1.3;
+  }
+  #pdf-print-root .pdf-metrics span {
+    display: block;
+    font-size: 8pt;
+    font-weight: 600;
+    margin-top: 5px;
+  }
+  #pdf-print-root .pdf-metrics small {
+    display: block;
+    font-size: 6.7pt;
+    line-height: 1.5;
+    color: #5e766c !important;
+    margin-top: 2px;
+  }
+
+  #pdf-print-root .pdf-resume-project {
+    margin: 4px 0;
+  }
+  #pdf-print-root .pdf-resume-project b {
+    font-size: 9pt;
+  }
+  #pdf-print-root .pdf-resume-project > span {
+    float: right;
+    font-size: 7.5pt;
+    color: #65776e !important;
+  }
+  #pdf-print-root .pdf-resume-project p {
+    font-size: 8.8pt;
+    line-height: 1.42;
+    margin: 1px 0;
+  }
+  #pdf-print-root .pdf-career-summary + .pdf-career-summary {
+    border-top: 1px solid #e5ece8;
+    margin-top: 5px;
+    padding-top: 2px;
+  }
+  #pdf-print-root .pdf-education {
+    margin-top: 5px;
+  }
+
+  #pdf-print-root .pdf-project-title {
+    margin-top: 15px;
+  }
+  #pdf-print-root .pdf-project-title h2 {
+    font-size: 23pt;
+    line-height: 1.25;
+    color: #1b3c30 !important;
+    letter-spacing: -0.8px;
+    margin: 5px 0 7px;
+  }
+  #pdf-print-root .pdf-meta {
+    color: #6a7d72 !important;
+    font-size: 8.5pt;
+  }
+  #pdf-print-root .pdf-lead {
+    font-size: 11pt;
+    line-height: 1.65;
+    margin: 10px 0;
+  }
+
+  #pdf-print-root .pdf-project ul,
+  #pdf-print-root .pdf-sheet section ul {
+    padding-left: 17px;
+    margin: 5px 0;
+    list-style: disc;
+  }
+  #pdf-print-root .pdf-project li,
+  #pdf-print-root .pdf-sheet section li {
+    margin: 5px 0;
+    break-inside: avoid;
+  }
+
+  #pdf-print-root .pdf-result {
+    border-left: 3px solid #267a5f;
+    background: #f0f7f3 !important;
+    padding: 6px 12px;
+  }
+  #pdf-print-root .pdf-result ul {
+    margin: 0;
+  }
+
+  #pdf-print-root .pdf-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+  #pdf-print-root .pdf-tags span {
+    font-size: 8pt;
+    border: 1px solid #dbe7df;
+    border-radius: 4px;
+    padding: 2px 7px;
+    color: #496557 !important;
+  }
+
+  #pdf-print-root .pdf-links {
+    font-size: 8pt;
+    line-height: 1.7;
+    color: #27674f !important;
+    margin-top: 8px;
+  }
+
+  #pdf-print-root .pdf-flow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 14px 0;
+    padding: 11px 10px;
+    border: 1px solid #dce8e0;
+    border-radius: 6px;
+  }
+  #pdf-print-root .pdf-flow div {
+    flex: 1;
+    text-align: center;
+    font-size: 8.7pt;
+    font-weight: 600;
+    color: #24654e !important;
+  }
+  #pdf-print-root .pdf-flow > span {
+    color: #81a291 !important;
+  }
+
+  #pdf-print-root .pdf-project.pdf-dense {
+    font-size: 8.8pt;
+    line-height: 1.46;
+  }
+  #pdf-print-root .pdf-project.pdf-dense .pdf-project-title {
+    margin-top: 10px;
+  }
+  #pdf-print-root .pdf-project.pdf-dense .pdf-project-title h2 {
+    font-size: 16pt;
+    margin: 4px 0;
+  }
+  #pdf-print-root .pdf-project.pdf-dense .pdf-lead {
+    font-size: 9.3pt;
+    line-height: 1.48;
+    margin: 5px 0;
+  }
+  #pdf-print-root .pdf-project.pdf-dense h2 {
+    font-size: 9.5pt;
+    margin: 6px 0 3px;
+  }
+  #pdf-print-root .pdf-project.pdf-dense li {
+    margin: 3px 0;
+  }
+  #pdf-print-root .pdf-project.pdf-dense .pdf-tags {
+    margin-top: 6px;
+  }
+  #pdf-print-root .pdf-project.pdf-dense .pdf-tags span {
+    font-size: 7pt;
+    padding: 1px 5px;
+  }
+  #pdf-print-root .pdf-project.pdf-dense .pdf-result {
+    padding: 4px 8px;
+  }
+  #pdf-print-root .pdf-project.pdf-dense .pdf-links {
+    font-size: 7pt;
+    margin-top: 5px;
+  }
+  #pdf-print-root .pdf-pair .pdf-project + .pdf-project {
+    border-top: 1px solid #dde7e1;
+    margin-top: 12px;
+    padding-top: 1px;
+  }
+
+  #pdf-print-root .pdf-sheet footer {
+    position: absolute;
+    left: 17mm;
+    right: 17mm;
+    bottom: 9mm;
+    border-top: 1px solid #e0e8e3;
+    padding-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    color: #7b8b82 !important;
+    font-size: 7pt;
+  }
+
+  #pdf-print-root .pdf-resume-sheet {
+    font-size: 8.8pt;
+    line-height: 1.46;
+  }
+  #pdf-print-root .pdf-resume-sheet h2 {
+    margin-top: 8px;
+  }
+  #pdf-print-root .pdf-resume-sheet header {
+    margin-bottom: 12px;
+  }
+  #pdf-print-root .pdf-resume-sheet .pdf-intro {
+    font-size: 9.2pt;
+    line-height: 1.5;
+  }
+  #pdf-print-root .pdf-resume-sheet .pdf-contact {
+    font-size: 7.6pt;
   }
 }

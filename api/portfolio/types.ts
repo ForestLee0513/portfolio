@@ -15,4 +15,10 @@ export interface PortfolioProject {
   highlights: string[];
   stack: string[];
   links: PortfolioLink[];
+  /** 문서와 웹 카드에서 공통으로 쓰는 편집본 상세 내용. */
+  challenge?: string;
+  implementation?: string[];
+  outcomes?: string[];
+  /** 포트폴리오 PDF의 서비스 흐름 다이어그램에 쓰는 단계별 라벨. */
+  flow?: string[];
 }

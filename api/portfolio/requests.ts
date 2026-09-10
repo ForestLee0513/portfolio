@@ -34,7 +34,7 @@ function mapPageToProject(page: PageObjectResponse): PortfolioProject | null {
 
   const { start, end } = pickDateRange(page.properties, PORTFOLIO_PROPERTY_NAMES.period);
 
-  return {
+  const project = {
     id: page.id.replace(/-/g, ""),
     name: getTitle(page.properties),
     category: pickText(page.properties, PORTFOLIO_PROPERTY_NAMES.category),
@@ -43,9 +43,15 @@ function mapPageToProject(page: PageObjectResponse): PortfolioProject | null {
     period: formatPeriod(start, end),
     summary: pickText(page.properties, PORTFOLIO_PROPERTY_NAMES.summary),
     highlights: pickTextLines(page.properties, PORTFOLIO_PROPERTY_NAMES.highlights),
+    challenge: pickText(page.properties, PORTFOLIO_PROPERTY_NAMES.challenge),
+    implementation: pickTextLines(page.properties, PORTFOLIO_PROPERTY_NAMES.implementation),
+    outcomes: pickTextLines(page.properties, PORTFOLIO_PROPERTY_NAMES.outcomes),
+    flow: pickTextLines(page.properties, PORTFOLIO_PROPERTY_NAMES.flow),
     stack: pickMultiSelect(page.properties, PORTFOLIO_PROPERTY_NAMES.stack),
     links: pickLinks(page.properties, PORTFOLIO_PROPERTY_NAMES.links),
   };
+
+  return project;
 }
 
 export async function getPortfolioProjects(): Promise<PortfolioProject[]> {

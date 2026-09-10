@@ -18,6 +18,12 @@ export default function PdfDownloadProvider({
 }) {
   const [job, setJob] = useState<PdfPrintJob | null>(null);
 
+  const loadPortfolioForPrint = async () => {
+    const response = await fetch("/api/portfolio", { cache: "no-store" });
+    if (!response.ok) throw new Error("포트폴리오 데이터를 불러오지 못했습니다.");
+    return (await response.json()) as PortfolioProject[];
+  };
+
   useEffect(() => {
     if (!job) return;
 
@@ -35,16 +41,20 @@ export default function PdfDownloadProvider({
   return (
     <PdfDownloadContext.Provider
       value={{
-        downloadResume: () => setJob({ type: "resume" }),
-        downloadCareer: () => setJob({ type: "career" }),
+        downloadResume: () => {
+          void loadPortfolioForPrint().then((projects) => setJob({ type: "resume", projects }));
+        },
+        downloadCareer: () => {
+          void loadPortfolioForPrint().then((projects) => setJob({ type: "career", projects }));
+        },
         downloadPortfolio: (projects: PortfolioProject[]) =>
           setJob({ type: "portfolio", projects }),
       }}
     >
       {children}
       <div id="pdf-print-root" className="hidden print:block">
-        {job?.type === "resume" && <ResumeDocument />}
-        {job?.type === "career" && <CareerDocument />}
+        {job?.type === "resume" && <ResumeDocument projects={job.projects} />}
+        {job?.type === "career" && <CareerDocument projects={job.projects} />}
         {job?.type === "portfolio" && <PortfolioDocument projects={job.projects} />}
       </div>
     </PdfDownloadContext.Provider>

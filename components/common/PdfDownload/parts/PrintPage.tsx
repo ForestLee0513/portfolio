@@ -1,61 +1,78 @@
 import type { ReactNode } from "react";
 import { profile } from "@/lib/data/profile";
 
+function handleFromUrl(url: string) {
+  return url.replace(/\/+$/, "").split("/").pop() ?? url;
+}
+
+function formatEdition(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${year}.${month}`;
+}
+
 // 인쇄(=PDF 저장) 전용 문서 공통 레이아웃.
-// bg-background/text-foreground 같은 테마 토큰 대신 리터럴 색상만 사용해,
-// 다크모드로 보고 있어도 인쇄 결과는 항상 라이트모드로 고정되게 한다.
-export default function PrintPage({
+// documents/generate.mjs가 만드는 제출용 A4 문서(이력서·경력기술서·포트폴리오)와
+// 동일한 마크업·클래스 구조를 그대로 옮겨, styles/globals.css의 인쇄 스타일과 짝을 이룬다.
+// bg-background/text-foreground 같은 테마 토큰 대신 리터럴 색상만 쓰는 원본 CSS를 그대로
+// 이식했기 때문에, 다크모드로 보고 있어도 인쇄 결과는 항상 라이트모드로 고정된다.
+export default function PdfSheet({
+  eyebrow,
   documentTitle,
+  pageIndex,
+  pageTotal,
+  compact = false,
+  tagline = false,
+  resumeSheet = false,
   children,
 }: {
+  eyebrow: string;
   documentTitle: string;
+  pageIndex: number;
+  pageTotal: number;
+  compact?: boolean;
+  tagline?: boolean;
+  resumeSheet?: boolean;
   children: ReactNode;
 }) {
   return (
-    <article className="bg-white text-neutral-900">
-      <header className="flex items-start justify-between gap-6 border-b border-neutral-200 pb-5">
-        <div>
-          <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
-            {documentTitle}
-          </p>
-          <h1 className="mt-1 text-2xl font-bold text-neutral-900">
-            {profile.name}
-            <span className="ml-2 text-base font-normal text-neutral-500">
-              {profile.role}
-            </span>
+    <article className={`pdf-sheet${resumeSheet ? " pdf-resume-sheet" : ""}`}>
+      <header className={compact ? "pdf-compact" : ""}>
+        <div className="pdf-eyebrow">WOOLIM LEE / {eyebrow}</div>
+        <div className="pdf-heading">
+          <h1>
+            {profile.name} <span>{profile.role}</span>
           </h1>
-          <p className="mt-1 text-sm text-neutral-500">{profile.tagline}</p>
+          <span className="pdf-edition">{formatEdition(new Date())}</span>
         </div>
-        <ul className="shrink-0 space-y-1 text-right text-xs text-neutral-500">
-          <li>{profile.email}</li>
-          <li>{profile.phone}</li>
-          <li>{profile.links.github.replace("https://", "")}</li>
-          <li>{profile.links.linkedin.replace("https://", "")}</li>
-        </ul>
+        {tagline && <p className="pdf-tagline">{profile.tagline}</p>}
+        <div className="pdf-contact">
+          <a href={profile.links.email}>{profile.email}</a>
+          <span>{profile.phone.replace("+82 ", "0")}</span>
+          <a href={profile.links.github}>GitHub / {handleFromUrl(profile.links.github)}</a>
+          <a href={profile.links.linkedin}>LinkedIn / {handleFromUrl(profile.links.linkedin)}</a>
+        </div>
       </header>
 
-      <div className="mt-6 space-y-8 pb-4">{children}</div>
+      {children}
+
+      <footer>
+        <span>
+          {profile.name} · {documentTitle} / {profile.email}
+        </span>
+        <span>
+          {pageIndex} / {pageTotal}
+        </span>
+      </footer>
     </article>
   );
 }
 
-export function PrintSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
-  // section 전체에 break-inside-avoid를 걸면, 프로젝트 카드가 여러 개라 한 페이지를
-  // 넘는 순간 섹션 전체가 다음 페이지로 밀려 첫 페이지가 타이틀만 남고 비어 보인다.
-  // 제목만 페이지 맨 아래 홀로 남지 않도록 break-after-avoid만 제목에 걸고,
-  // 내용은 자연스럽게 페이지에 걸쳐 흐르게 둔다.
+export function PrintSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h2 className="break-after-avoid text-sm font-bold tracking-wide text-neutral-900 uppercase">
-        {title}
-      </h2>
-      <div className="mt-3">{children}</div>
+      <h2>{title}</h2>
+      {children}
     </section>
   );
 }

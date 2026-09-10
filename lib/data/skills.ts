@@ -1,5 +1,5 @@
 // Skills 화면에서 사용하는 기술 스택 데이터.
-// 출처: references/이우림_Front-end_포트폴리오.pdf (SKILLS 섹션)
+// 출처: 원본 이력서 및 지정 프로젝트 저장소 (2026.09.10 대조).
 
 export interface SkillCategory {
   id: string;
@@ -62,6 +62,12 @@ export const skillCategories: SkillCategory[] = [
       "PASS 본인인증",
       "Firebase Analytics",
     ],
+  },
+  {
+    id: "backend",
+    title: "백엔드 · 데이터 운영",
+    description: "IInfoDX 사용자 웹·API·운영 어드민 개발에 활용",
+    items: ["Python", "FastAPI", "Supabase", "Redis", "APScheduler", "React Router (Framework Mode)"],
   },
   {
     id: "infra",

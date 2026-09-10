@@ -1,74 +1,88 @@
 import type { PortfolioProject } from "@/api/portfolio/types";
-import PrintPage, { PrintSection } from "./PrintPage";
+import PdfSheet, { PrintSection } from "./PrintPage";
+import PdfProjectIntro from "./PdfProjectIntro";
 
 // 포트폴리오 페이지에서 실제로 렌더링된(=필터 적용 전 전체) 프로젝트 목록을 그대로 문서화한다.
-export default function PortfolioDocument({
-  projects,
-}: {
-  projects: PortfolioProject[];
-}) {
+// 프로젝트 1건당 A4 한 페이지로, documents/generate.mjs 제출용 포트폴리오와 동일한 구성이다.
+export default function PortfolioDocument({ projects }: { projects: PortfolioProject[] }) {
   return (
-    <PrintPage documentTitle="Portfolio">
-      <PrintSection title={`프로젝트 (${projects.length}건)`}>
-        {/* flex는 크로미움 인쇄 시 컨테이너 높이가 한 페이지를 넘으면 다음 페이지로
-            흘리지 못하고 내용을 잘라버리는 경우가 있어, 일반 블록 흐름(space-y)으로 구성한다. */}
-        <div className="space-y-4">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="break-inside-avoid rounded-lg border border-neutral-200 p-4"
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                <h4 className="text-sm font-bold text-neutral-900">
-                  {project.name}
-                  <span className="ml-2 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700 align-middle">
-                    {project.category}
-                  </span>
-                </h4>
-                <span className="text-xs text-neutral-500">{project.period}</span>
-              </div>
-              <p className="mt-1 text-xs text-neutral-500">
-                {project.org} · {project.role}
-              </p>
+    <>
+      {projects.map((project, index) => (
+        <PdfSheet
+          key={project.id}
+          documentTitle="포트폴리오"
+          eyebrow={`포트폴리오 · ${String(index + 1).padStart(2, "0")}`}
+          compact
+          pageIndex={index + 1}
+          pageTotal={projects.length}
+        >
+          <PdfProjectIntro project={project} />
 
-              <p className="mt-2 text-xs leading-5 text-neutral-600">
-                {project.summary}
-              </p>
+          <div className="pdf-flow">
+            {(project.flow ?? []).flatMap((step, i) => [
+              i > 0 ? (
+                <span key={`arrow-${step}`} aria-hidden="true">
+                  →
+                </span>
+              ) : null,
+              <div key={step}>{step}</div>,
+            ])}
+          </div>
 
-              {project.highlights.length > 0 && (
-                <ul className="mt-2 space-y-1">
-                  {project.highlights.map((highlight) => (
-                    <li
-                      key={highlight}
-                      className="text-xs leading-5 text-neutral-600 before:mr-1.5 before:content-['–']"
-                    >
-                      {highlight}
-                    </li>
+          {project.challenge && (
+            <PrintSection title="해결 과제">
+              <p>{project.challenge}</p>
+            </PrintSection>
+          )}
+
+          {project.implementation && project.implementation.length > 0 && (
+            <PrintSection title="주요 구현">
+              <ul>
+                {project.implementation.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </PrintSection>
+          )}
+
+          {project.outcomes && project.outcomes.length > 0 && (
+            <PrintSection title="결과 · 기여">
+              <div className="pdf-result">
+                <ul>
+                  {project.outcomes.map((item) => (
+                    <li key={item}>{item}</li>
                   ))}
                 </ul>
-              )}
+              </div>
+            </PrintSection>
+          )}
 
-              {project.stack.length > 0 && (
-                <p className="mt-2 text-[11px] text-neutral-500">
-                  <span className="font-medium text-neutral-700">기술 스택</span>{" "}
-                  {project.stack.join(", ")}
-                </p>
-              )}
+          {project.stack.length > 0 && (
+            <PrintSection title="사용 기술">
+              <div className="pdf-tags">
+                {project.stack.map((tech) => (
+                  <span key={tech}>{tech}</span>
+                ))}
+              </div>
+            </PrintSection>
+          )}
 
-              {project.links.length > 0 && (
-                <p className="mt-1 text-[11px] text-neutral-500">
-                  {project.links.map((link, index) => (
-                    <span key={link.href}>
-                      {index > 0 && " · "}
-                      {link.label}: {link.href}
-                    </span>
-                  ))}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      </PrintSection>
-    </PrintPage>
+          {project.links.length > 0 && (
+            <PrintSection title="링크">
+              <p className="pdf-links">
+                {project.links.map((link, i) => (
+                  <span key={link.href}>
+                    {i > 0 && <br />}
+                    <a href={link.href}>
+                      {link.label} · {link.href}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            </PrintSection>
+          )}
+        </PdfSheet>
+      ))}
+    </>
   );
 }
