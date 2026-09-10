@@ -26,8 +26,8 @@ export default function Contact() {
     <>
       <PageHeader
         eyebrow="Contact"
-        title="커피챗이나 면접 제안, 편하게 남겨주세요"
-        description="이력·포트폴리오를 보시고 궁금한 점이 있거나 함께 이야기 나누고 싶으시다면 아래 채널로 연락 주세요. 보통 1~2일 안에 답변드립니다."
+        title="연락처"
+        description="커피챗, 프론트엔드 채용 및 협업 문의는 아래 채널로 연락 주세요."
       />
 
       <section className="px-5 py-10 sm:px-8 sm:py-14">

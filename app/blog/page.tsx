@@ -4,7 +4,7 @@ import Blog from "@/components/screens/Blog";
 import BlogPostList from "@/components/screens/Blog/parts/BlogPostList";
 import CardGridSkeleton from "@/components/common/CardGridSkeleton";
 
-export const metadata: Metadata = { title: "Blog" };
+export const metadata: Metadata = { title: "개발 기록" };
 
 // 재검증 주기 — Notion에 새 글을 올리면 최대 이만큼 후 반영된다.
 export const revalidate = 300;

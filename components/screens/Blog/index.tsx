@@ -8,8 +8,8 @@ export default function Blog({ children }: { children: ReactNode }) {
     <>
       <PageHeader
         eyebrow="Blog"
-        title="개발하며 정리한 생각들"
-        description="Notion에 정리한 글을 그대로 이어서 보여줍니다."
+        title="개발 기록"
+        description="개발 과정에서 배운 내용과 문제 해결 과정을 기록합니다."
       />
 
       <section className="px-5 py-12 sm:px-8 sm:py-16">{children}</section>

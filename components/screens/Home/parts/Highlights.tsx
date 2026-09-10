@@ -17,7 +17,7 @@ export default function Highlights() {
           transition={{ duration: 0.4 }}
           className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
         >
-          문제의 원인까지 파고드는 개발자
+          주요 개발 경험
         </motion.h2>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-3">

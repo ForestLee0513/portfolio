@@ -20,8 +20,8 @@ export default function Portfolio({
     <>
       <PageHeader
         eyebrow="Portfolio"
-        title="지금까지 만들어 온 결과물들"
-        description="회사 프로젝트와 개인 프로젝트를 갤러리 형식으로 모았습니다. 새 프로젝트는 계속 추가될 예정입니다."
+        title="프로젝트"
+        description="회사에서 참여한 프로젝트와 개인 프로젝트의 담당 업무, 구현 내용, 성과를 정리했습니다."
       >
         <div className="mt-6">
           <FilterTabs value={filter} onChange={setFilter} />
@@ -29,7 +29,9 @@ export default function Portfolio({
       </PageHeader>
 
       <section className="px-5 py-12 sm:px-8 sm:py-16">
-        <Suspense fallback={<CardGridSkeleton count={4} columns="sm:grid-cols-2" />}>
+        <Suspense
+          fallback={<CardGridSkeleton count={4} columns="sm:grid-cols-2" />}
+        >
           <PortfolioGrid projectsPromise={projectsPromise} filter={filter} />
         </Suspense>
       </section>

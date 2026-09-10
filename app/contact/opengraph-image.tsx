@@ -1,12 +1,12 @@
 import { ogImageContentType, ogImageSize, renderOgImage } from "@/lib/og-image";
 
-export const alt = "Contact";
+export const alt = "연락처";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
 export default async function Image() {
   return renderOgImage({
-    title: "Contact",
-    description: "커피챗이나 면접 제안은 언제든 편하게 연락 주세요.",
+    title: "연락처",
+    description: "커피챗, 프론트엔드 채용 및 협업 문의는 아래 채널로 연락 주세요.",
   });
 }

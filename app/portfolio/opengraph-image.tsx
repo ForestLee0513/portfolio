@@ -1,12 +1,12 @@
 import { ogImageContentType, ogImageSize, renderOgImage } from "@/lib/og-image";
 
-export const alt = "Portfolio";
+export const alt = "프로젝트";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
 export default async function Image() {
   return renderOgImage({
-    title: "Portfolio",
-    description: "지금까지 개발한 프로젝트를 모아둔 포트폴리오입니다.",
+    title: "프로젝트",
+    description: "회사에서 참여한 프로젝트와 개인 프로젝트의 담당 업무, 구현 내용, 성과를 정리했습니다.",
   });
 }

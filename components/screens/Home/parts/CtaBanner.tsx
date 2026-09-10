@@ -16,9 +16,9 @@ export default function CtaBanner() {
         className="mx-auto flex max-w-5xl flex-col items-start gap-5 rounded-4xl bg-primary px-8 py-12 text-primary-foreground sm:flex-row sm:items-center sm:justify-between"
       >
         <div>
-          <h2 className="text-xl font-bold sm:text-2xl">함께 일해볼까요?</h2>
+          <h2 className="text-xl font-bold sm:text-2xl">채용 및 협업 문의</h2>
           <p className="mt-2 text-sm text-primary-foreground/80">
-            커피챗이나 면접 제안, 협업 문의 모두 환영합니다.
+            채용이나 프로젝트 협업을 제안하고 싶으시면 연락 주세요. 커피챗도 좋습니다.
           </p>
         </div>
         <Button
