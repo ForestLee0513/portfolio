@@ -121,10 +121,19 @@ export default function PdfDownloadProvider({
       });
   };
 
-  const downloadPortfolio = (projects: PortfolioProject[]) => {
+  const downloadPortfolio = (projects?: PortfolioProject[]) => {
     if (loadingType) return;
     setLoadingType("portfolio");
-    setJob({ type: "portfolio", projects });
+    if (projects) {
+      setJob({ type: "portfolio", projects });
+      return;
+    }
+    loadPortfolioForPrint()
+      .then((loaded) => setJob({ type: "portfolio", projects: loaded }))
+      .catch(() => {
+        toast.error("포트폴리오를 준비하지 못했어요. 다시 시도해주세요.");
+        setLoadingType(null);
+      });
   };
 
   const documentContent = job && (

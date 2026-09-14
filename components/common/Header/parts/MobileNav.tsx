@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { IconFileDescription, IconFileText, IconMenu2 } from "@tabler/icons-react";
+import {
+  IconFileDescription,
+  IconFileText,
+  IconMenu2,
+} from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -17,7 +21,8 @@ import { NAV_ITEMS } from "./NavLinks";
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
-  const { downloadResume, downloadCareer, loadingType } = usePdfDownload();
+  const { downloadResume, downloadPortfolio, downloadCareer, loadingType } =
+    usePdfDownload();
   const isLoading = loadingType !== null;
 
   // 다운로드 버튼은 클릭 즉시 시트를 닫지 않고 로딩 상태를 보여준 뒤,
@@ -85,6 +90,19 @@ export default function MobileNav() {
                 <IconFileDescription className="size-4" />
               )}
               경력기술서 다운로드
+            </button>
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => downloadPortfolio()}
+              className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-secondary disabled:pointer-events-none disabled:opacity-50"
+            >
+              {loadingType === "portfolio" ? (
+                <Spinner className="size-4" />
+              ) : (
+                <IconFileDescription className="size-4" />
+              )}
+              포트폴리오 다운로드
             </button>
           </div>
 
