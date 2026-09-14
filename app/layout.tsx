@@ -29,6 +29,35 @@ export const metadata: Metadata = {
     template: `%s · ${profile.name}`,
   },
   description: profile.tagline,
+  keywords: [
+    profile.name,
+    profile.role,
+    "프론트엔드 개발자",
+    "Front-end Developer",
+    "React",
+    "Next.js",
+    "포트폴리오",
+    "이력서",
+  ],
+  authors: [{ name: profile.name, url: profile.links.github }],
+  creator: profile.name,
+  publisher: profile.name,
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    siteName: profile.name,
+    type: "website",
+    locale: "ko_KR",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
