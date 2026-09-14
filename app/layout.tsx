@@ -8,19 +8,8 @@ import Footer from "@/components/common/Footer";
 import PdfDownloadProvider from "@/components/common/PdfDownload";
 import { Toaster } from "@/components/ui/sonner";
 import { profile } from "@/lib/data/profile";
+import { siteUrl } from "@/lib/site-url";
 import "@/styles/globals.css";
-
-// og:image 등 metadata에 들어가는 상대경로를 절대 URL로 바꿀 때 기준이 되는 origin.
-// 이 값이 없으면 Next.js가 "http://localhost:3000"으로 fallback해, 배포 환경에서도
-// OG 이미지가 로컬 주소로 잡히는 문제가 생긴다.
-// 우선순위: 직접 지정한 NEXT_PUBLIC_SITE_URL > Vercel 프로덕션 도메인 > Vercel 배포 URL(프리뷰) > 로컬.
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
