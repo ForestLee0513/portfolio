@@ -49,26 +49,36 @@ export default function PdfSheet({
         <div className="pdf-contact">
           <a href={profile.links.email}>{profile.email}</a>
           <span>{profile.phone.replace("+82 ", "0")}</span>
-          <a href={profile.links.github}>GitHub / {handleFromUrl(profile.links.github)}</a>
-          <a href={profile.links.linkedin}>LinkedIn / {handleFromUrl(profile.links.linkedin)}</a>
+          <a href={profile.links.github}>
+            GitHub / {handleFromUrl(profile.links.github)}
+          </a>
+          <a href={profile.links.linkedin}>
+            LinkedIn / {handleFromUrl(profile.links.linkedin)}
+          </a>
         </div>
       </header>
 
       {children}
 
-      <footer>
+      {/* <footer>
         <span>
           {profile.name} · {documentTitle} / {profile.email}
         </span>
         <span>
           {pageIndex} / {pageTotal}
         </span>
-      </footer>
+      </footer> */}
     </article>
   );
 }
 
-export function PrintSection({ title, children }: { title: string; children: ReactNode }) {
+export function PrintSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
   return (
     <section>
       <h2>{title}</h2>

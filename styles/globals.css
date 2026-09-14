@@ -168,8 +168,15 @@
   }
 
   #pdf-print-root .pdf-sheet {
+    box-sizing: border-box;
     width: 210mm;
-    min-height: 297mm;
+    /* iOS는 @page { margin: 0 }과 무관하게 자체 footer(URL·날짜·페이지 번호)를
+       찍을 여백을 페이지 하단에 확보한다. 박스를 정확히 297mm로 채우면 우리
+       footer(position:absolute; bottom:9mm)가 그 예약된 영역과 겹쳐 다음 페이지로
+       밀려나 "footer만 있는 빈 페이지"가 생긴다. 실제 인쇄 가능 영역보다 넉넉히
+       작게 잡아 항상 한 페이지 안에 들어오게 한다. overflow:hidden은 폰트 렌더링
+       차이 등으로 내용이 이 높이를 넘길 때를 대비한 안전장치다. */
+    height: 280mm;
     background: #fff !important;
     color: #1d2c29 !important;
     margin: 0;
@@ -180,17 +187,12 @@
     font-size: 9.6pt;
     line-height: 1.64;
     word-break: keep-all;
-    overflow-wrap: anywhere;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-  }
-  #pdf-print-root > .pdf-sheet:last-child {
-    break-after: auto;
   }
   #pdf-print-root .pdf-sheet * {
     box-sizing: border-box;
   }
-
   #pdf-print-root .pdf-sheet header {
     border-top: 4px solid #186653;
     border-bottom: 1px solid #d9e4df;
@@ -459,19 +461,6 @@
     border-top: 1px solid #dde7e1;
     margin-top: 12px;
     padding-top: 1px;
-  }
-
-  #pdf-print-root .pdf-sheet footer {
-    position: absolute;
-    left: 17mm;
-    right: 17mm;
-    bottom: 9mm;
-    border-top: 1px solid #e0e8e3;
-    padding-top: 6px;
-    display: flex;
-    justify-content: space-between;
-    color: #7b8b82 !important;
-    font-size: 7pt;
   }
 
   #pdf-print-root .pdf-resume-sheet {
