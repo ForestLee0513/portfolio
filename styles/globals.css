@@ -190,6 +190,9 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  #pdf-print-root > .pdf-sheet:last-child {
+    break-after: auto;
+  }
   #pdf-print-root .pdf-sheet * {
     box-sizing: border-box;
   }
