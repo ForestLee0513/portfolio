@@ -1,8 +1,10 @@
-import type { PageObjectResponse } from "@notionhq/client";
+import { isFullPage, type PageObjectResponse } from "@notionhq/client";
 
 import {
   getDataSourceId,
+  getPageImages,
   getTitle,
+  notionClient,
   pickCheckbox,
   pickDateRange,
   pickLinks,
@@ -69,5 +71,25 @@ export async function getPortfolioProjects(): Promise<PortfolioProject[]> {
   } catch (error) {
     console.error("[portfolio] Notion 프로젝트 목록을 불러오지 못했습니다.", error);
     return [];
+  }
+}
+
+// 상세 페이지(app/portfolio/[id])용 단건 조회. challenge/implementation/outcomes/flow는
+// 목록과 같은 데이터베이스 속성이라 mapPageToProject로 충분하지만, 스크린샷은 페이지
+// 본문(블록)에만 있어 getPageImages로 따로 읽는다 — 목록 카드에는 필요 없어 상세에서만 조회한다.
+export async function getPortfolioProject(id: string): Promise<PortfolioProject | null> {
+  try {
+    const pageId = id.replace(/-/g, "");
+    const page = await notionClient.pages.retrieve({ page_id: pageId }).catch(() => null);
+    if (!page || !isFullPage(page)) return null;
+
+    const project = mapPageToProject(page);
+    if (!project) return null;
+
+    const screenshots = await getPageImages(pageId).catch(() => []);
+    return { ...project, screenshots };
+  } catch (error) {
+    console.error("[portfolio] Notion 프로젝트를 불러오지 못했습니다.", error);
+    return null;
   }
 }

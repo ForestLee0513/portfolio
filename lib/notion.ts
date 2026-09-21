@@ -114,6 +114,24 @@ export function getCoverUrl(page: PageObjectResponse): string | null {
   return page.cover.type === "external" ? page.cover.external.url : page.cover.file.url;
 }
 
+// 페이지 본문(블록)에 첨부된 이미지 블록만 뽑는다 — 포트폴리오 상세 페이지의
+// 스크린샷 갤러리처럼, 데이터베이스 속성이 아니라 페이지 본문에만 있는 콘텐츠용.
+export async function getPageImages(
+  pageId: string
+): Promise<{ url: string; caption: string }[]> {
+  const { results } = await notionClient.blocks.children.list({ block_id: pageId, page_size: 100 });
+
+  return results
+    .filter(isFullBlock)
+    .filter((block) => block.type === "image")
+    .map((block) => {
+      const image = block.image;
+      const url = image.type === "external" ? image.external.url : image.file.url;
+      const caption = image.caption.map((t) => t.plain_text).join("");
+      return { url, caption };
+    });
+}
+
 // 설정값(루트 ID)은 데이터베이스 자체의 ID일 수도, 그 데이터베이스를 인라인으로
 // 담고 있는 상위 페이지의 ID일 수도 있다 — 둘 다 그대로 동작하게 한다.
 export async function resolveDatabaseId(rootId: string): Promise<string | null> {

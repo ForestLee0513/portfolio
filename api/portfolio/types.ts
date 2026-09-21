@@ -21,4 +21,11 @@ export interface PortfolioProject {
   outcomes?: string[];
   /** 포트폴리오 PDF의 서비스 흐름 다이어그램에 쓰는 단계별 라벨. */
   flow?: string[];
+  /** Notion 페이지 본문(블록)에 첨부된 스크린샷 — 상세 페이지에서만 채워진다. */
+  screenshots?: PortfolioScreenshot[];
+}
+
+export interface PortfolioScreenshot {
+  url: string;
+  caption: string;
 }
