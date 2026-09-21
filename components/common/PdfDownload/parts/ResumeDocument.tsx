@@ -1,4 +1,4 @@
-import { career, education, profile } from "@/lib/data/profile";
+import { career, education, militaryService, profile } from "@/lib/data/profile";
 import type { PortfolioProject } from "@/api/portfolio/types";
 import PdfSheet, { PrintSection } from "./PrintPage";
 
@@ -80,7 +80,8 @@ export default function ResumeDocument({ projects = [] }: { projects?: Portfolio
           <b>
             {education.school} · {education.major}
           </b>{" "}
-          / {education.period} · {education.status}
+          / {education.period} · {education.status}{" "}
+          <b>병역사항</b> · {militaryService}
         </p>
       </PrintSection>
     </PdfSheet>

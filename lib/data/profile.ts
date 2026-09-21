@@ -95,3 +95,5 @@ export const education = {
   description:
     "2020년 11월 PSR Media 현장실습에서 품절 대체 솔루션 개발·운영을 경험했습니다.",
 };
+
+export const militaryService = "전시근로역";

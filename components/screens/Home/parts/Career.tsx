@@ -1,9 +1,11 @@
 "use client";
 
 import { Fragment } from "react";
+import Link from "next/link";
 import { motion } from "motion/react";
+import { IconArrowRight } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
-import { career, education } from "@/lib/data/profile";
+import { career, education, militaryService } from "@/lib/data/profile";
 
 export default function Career() {
   return (
@@ -61,9 +63,10 @@ export default function Career() {
 
                 <div className="mt-5 flex flex-col gap-4">
                   {entry.projects.map((project) => (
-                    <div
+                    <Link
                       key={project.name}
-                      className="rounded-3xl bg-card p-5 ring-1 ring-foreground/5 dark:ring-foreground/10"
+                      href={`/portfolio/${project.id}`}
+                      className="group rounded-3xl bg-card p-5 ring-1 ring-foreground/5 transition-shadow hover:shadow-lg dark:ring-foreground/10"
                     >
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                         <h4 className="font-medium text-foreground">
@@ -76,7 +79,11 @@ export default function Career() {
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">
                         {project.summary}
                       </p>
-                    </div>
+                      <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                        자세히 보기
+                        <IconArrowRight size={14} />
+                      </span>
+                    </Link>
                   ))}
                 </div>
               </motion.div>
@@ -98,7 +105,7 @@ export default function Career() {
             {education.school} · {education.major}
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            {education.period} · {education.status}
+            {education.period} · {education.status} · 병역사항 {militaryService}
           </p>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             {education.description}
