@@ -9,6 +9,20 @@ Notion을 CMS로 쓰는 블로그·포트폴리오로 구성되어 있습니다.
 - Contact (`/contact`) — 이메일/GitHub/LinkedIn 연락 채널
 - Blog (`/blog`) — Notion 데이터베이스를 CMS로 쓰는 블로그
 
+## 스크린샷
+
+| 홈 히어로 | 주요 개발 경험 · 경력 타임라인 |
+| --- | --- |
+| ![홈 히어로](docs/screenshots/01-home-hero.jpg) | ![경력 타임라인](docs/screenshots/02-home-career-timeline.jpg) |
+
+| 포트폴리오 프로젝트 목록 | 포트폴리오 개인 프로젝트 필터 |
+| --- | --- |
+| ![포트폴리오 목록](docs/screenshots/03-portfolio-list.jpg) | ![포트폴리오 필터](docs/screenshots/04-portfolio-filter.jpg) |
+
+| 라이트 모드 전환 |
+| --- |
+| ![라이트 모드](docs/screenshots/05-light-mode.jpg) |
+
 ## 기술 스택
 
 - **Framework**: Next.js 16 (App Router), React 19, TypeScript
