@@ -170,11 +170,10 @@
   #pdf-print-root .pdf-sheet {
     box-sizing: border-box;
     width: 210mm;
-    /* iOS는 @page { margin: 0 }과 무관하게 자체 footer(URL·날짜·페이지 번호)를
-       찍을 여백을 페이지 하단에 확보한다. 박스를 정확히 297mm로 채우면 우리
-       footer(position:absolute; bottom:9mm)가 그 예약된 영역과 겹쳐 다음 페이지로
-       밀려나 "footer만 있는 빈 페이지"가 생긴다. 실제 인쇄 가능 영역보다 넉넉히
-       작게 잡아 항상 한 페이지 안에 들어오게 한다. overflow:hidden은 폰트 렌더링
+    /* iOS Chrome은 @page { margin: 0 }과 무관하게 자체 footer(URL·날짜·페이지 번호)를
+       찍을 여백을 페이지 하단에 항상 확보한다. 박스를 정확히 297mm로 채우면 그 예약된
+       영역과 겹쳐 다음 페이지로 밀려나 "빈 페이지"가 생기므로, 실제 인쇄 가능 영역보다
+       넉넉히 작게 잡아 항상 한 페이지 안에 들어오게 한다. overflow:hidden은 폰트 렌더링
        차이 등으로 내용이 이 높이를 넘길 때를 대비한 안전장치다. */
     height: 280mm;
     background: #fff !important;
@@ -377,9 +376,40 @@
     border-left: 3px solid #267a5f;
     background: #f0f7f3 !important;
     padding: 6px 12px;
+    margin: 0 0 10px;
   }
   #pdf-print-root .pdf-result ul {
     margin: 0;
+  }
+
+  #pdf-print-root .pdf-screenshots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 10px 0;
+  }
+  #pdf-print-root .pdf-screenshots-2col {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 0 0 10px;
+  }
+  #pdf-print-root .pdf-screenshots figure {
+    margin: 0;
+    break-inside: avoid;
+  }
+  #pdf-print-root .pdf-screenshots img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #dbe7df;
+  }
+  #pdf-print-root .pdf-screenshots figcaption {
+    margin-top: 3px;
+    font-size: 6.7pt;
+    text-align: center;
+    color: #6a7d72 !important;
   }
 
   #pdf-print-root .pdf-tags {
@@ -455,6 +485,7 @@
   }
   #pdf-print-root .pdf-project.pdf-dense .pdf-result {
     padding: 4px 8px;
+    margin: 0 0 6px;
   }
   #pdf-print-root .pdf-project.pdf-dense .pdf-links {
     font-size: 7pt;

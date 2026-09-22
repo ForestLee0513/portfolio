@@ -51,14 +51,11 @@ export default function CareerDocument({ projects }: { projects: PortfolioProjec
 
   return (
     <>
-      {pages.map((page, index) => (
+      {pages.map((page) => (
         <PdfSheet
           key={page.kind === "company" ? `${page.company}-${page.group[0]?.id}` : page.project.id}
-          documentTitle="경력기술서"
           eyebrow={page.kind === "company" ? `경력기술서 · ${page.company}` : "경력기술서 · 개인 프로젝트"}
           compact
-          pageIndex={index + 1}
-          pageTotal={pages.length}
         >
           {page.kind === "personal" && (
             <article className="pdf-project">

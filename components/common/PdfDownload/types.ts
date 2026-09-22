@@ -11,8 +11,9 @@ export type PdfPrintJob =
 export interface PdfDownloadContextValue {
   downloadResume: () => void;
   downloadCareer: () => void;
-  /** 이미 불러온 목록이 있으면 그대로 쓰고(포트폴리오 페이지), 없으면 직접 fetch한다(헤더 등 전역 진입점). */
-  downloadPortfolio: (projects?: PortfolioProject[]) => void;
+  /** 포트폴리오 화면의 목록에는 카드 렌더링에 필요 없는 스크린샷이 빠져 있어(성능상 이유),
+   *  항상 PDF 전용 엔드포인트(app/api/portfolio)에서 스크린샷 포함 데이터를 새로 받아온다. */
+  downloadPortfolio: () => void;
   /** 현재 준비·인쇄 중인 문서 종류. 데이터 로딩 시작부터 인쇄 완료(afterprint)까지 유지된다. */
   loadingType: PdfDocumentType | null;
 }

@@ -18,56 +18,47 @@ function formatEdition(date: Date) {
 // 이식했기 때문에, 다크모드로 보고 있어도 인쇄 결과는 항상 라이트모드로 고정된다.
 export default function PdfSheet({
   eyebrow,
-  documentTitle,
-  pageIndex,
-  pageTotal,
   compact = false,
   tagline = false,
   resumeSheet = false,
+  continuation = false,
   children,
 }: {
-  eyebrow: string;
-  documentTitle: string;
-  pageIndex: number;
-  pageTotal: number;
+  eyebrow?: string;
   compact?: boolean;
   tagline?: boolean;
   resumeSheet?: boolean;
+  /** 같은 프로젝트·같은 맥락이 다음 페이지로 이어질 때(예: 스크린샷 전용 페이지) 헤더를
+   *  다시 찍지 않고 바로 본문부터 자연스럽게 이어지도록 한다. */
+  continuation?: boolean;
   children: ReactNode;
 }) {
   return (
     <article className={`pdf-sheet${resumeSheet ? " pdf-resume-sheet" : ""}`}>
-      <header className={compact ? "pdf-compact" : ""}>
-        <div className="pdf-eyebrow">WOOLIM LEE / {eyebrow}</div>
-        <div className="pdf-heading">
-          <h1>
-            {profile.name} <span>{profile.role}</span>
-          </h1>
-          <span className="pdf-edition">{formatEdition(new Date())}</span>
-        </div>
-        {tagline && <p className="pdf-tagline">{profile.tagline}</p>}
-        <div className="pdf-contact">
-          <a href={profile.links.email}>{profile.email}</a>
-          <span>{profile.phone.replace("+82 ", "0")}</span>
-          <a href={profile.links.github}>
-            GitHub / {handleFromUrl(profile.links.github)}
-          </a>
-          <a href={profile.links.linkedin}>
-            LinkedIn / {handleFromUrl(profile.links.linkedin)}
-          </a>
-        </div>
-      </header>
+      {!continuation && (
+        <header className={compact ? "pdf-compact" : ""}>
+          <div className="pdf-eyebrow">WOOLIM LEE / {eyebrow}</div>
+          <div className="pdf-heading">
+            <h1>
+              {profile.name} <span>{profile.role}</span>
+            </h1>
+            <span className="pdf-edition">{formatEdition(new Date())}</span>
+          </div>
+          {tagline && <p className="pdf-tagline">{profile.tagline}</p>}
+          <div className="pdf-contact">
+            <a href={profile.links.email}>{profile.email}</a>
+            <span>{profile.phone.replace("+82 ", "0")}</span>
+            <a href={profile.links.github}>
+              GitHub / {handleFromUrl(profile.links.github)}
+            </a>
+            <a href={profile.links.linkedin}>
+              LinkedIn / {handleFromUrl(profile.links.linkedin)}
+            </a>
+          </div>
+        </header>
+      )}
 
       {children}
-
-      {/* <footer>
-        <span>
-          {profile.name} · {documentTitle} / {profile.email}
-        </span>
-        <span>
-          {pageIndex} / {pageTotal}
-        </span>
-      </footer> */}
     </article>
   );
 }

@@ -45,7 +45,7 @@ export default function PortfolioGrid({
           variant="outline"
           size="sm"
           disabled={isLoading}
-          onClick={() => downloadPortfolio(projects)}
+          onClick={() => downloadPortfolio()}
         >
           {isLoading ? <Spinner data-icon="inline-start" /> : <IconDownload data-icon="inline-start" />}
           포트폴리오 PDF 다운로드

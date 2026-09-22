@@ -74,6 +74,19 @@ export async function getPortfolioProjects(): Promise<PortfolioProject[]> {
   }
 }
 
+// PDF 다운로드(app/api/portfolio)용. 원본 포트폴리오 PDF에는 프로젝트별 스크린샷이
+// 들어 있는데, 목록 화면(getPortfolioProjects)은 카드에 스크린샷이 필요 없어 조회하지
+// 않는다 — PDF 생성 경로에서만 프로젝트마다 병렬로 페이지 본문(이미지)을 추가로 읽는다.
+export async function getPortfolioProjectsForPrint(): Promise<PortfolioProject[]> {
+  const projects = await getPortfolioProjects();
+  return Promise.all(
+    projects.map(async (project) => ({
+      ...project,
+      screenshots: await getPageImages(project.id).catch(() => []),
+    }))
+  );
+}
+
 // 상세 페이지(app/portfolio/[id])용 단건 조회. challenge/implementation/outcomes/flow는
 // 목록과 같은 데이터베이스 속성이라 mapPageToProject로 충분하지만, 스크린샷은 페이지
 // 본문(블록)에만 있어 getPageImages로 따로 읽는다 — 목록 카드에는 필요 없어 상세에서만 조회한다.

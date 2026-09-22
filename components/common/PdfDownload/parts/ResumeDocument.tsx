@@ -23,10 +23,14 @@ function resumeProjectSummary(staticSummary: string, detail?: PortfolioProject) 
 // 이력서 = 경력 요약 + 자기소개. 홈(이력) 페이지의 내용을 문서 형식으로 재구성한다.
 export default function ResumeDocument({ projects = [] }: { projects?: PortfolioProject[] } = {}) {
   const projectByName = new Map(projects.map((project) => [project.name, project]));
-  const personalProjects = projects.filter((project) => project.category === "개인");
+  // 1쪽 분량이라 진행 중인 대표 개인 프로젝트만 싣는다 — 중단된 사이드 프로젝트(예: 리노티)는
+  // 경력기술서·포트폴리오에는 그대로 나오지만 이력서에는 원본 문서와 같이 넣지 않는다.
+  const personalProjects = projects.filter(
+    (project) => project.category === "개인" && !project.org.includes("중단")
+  );
 
   return (
-    <PdfSheet documentTitle="이력서" eyebrow="이력서" tagline resumeSheet pageIndex={1} pageTotal={1}>
+    <PdfSheet eyebrow="이력서" tagline resumeSheet>
       <p className="pdf-intro">{profile.summary}</p>
 
       <div className="pdf-metrics">
