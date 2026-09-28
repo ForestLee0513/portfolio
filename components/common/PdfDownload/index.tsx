@@ -18,6 +18,24 @@ function isIOSChrome() {
   return typeof navigator !== "undefined" && /CriOS/i.test(navigator.userAgent);
 }
 
+// 이미지가 로드되기 전에 print()를 호출하면 브라우저는 빈 이미지 영역을 그대로 PDF에 저장한다.
+async function waitForPrintImages(root: HTMLElement) {
+  const images = Array.from(root.querySelectorAll("img"));
+  if (images.length === 0) return;
+
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  try {
+    await Promise.race([
+      Promise.all(images.map((image) => image.decode())).then(() => undefined),
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error("이미지 로딩 시간 초과")), 20000);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 // 기본적으로 인쇄용 문서는 메인 문서에는 전혀 그리지 않고, 화면 밖에 항상 떠 있는
 // iframe의 별도 문서에 Portal로 그려 넣은 뒤 그 iframe에서만 print()를 호출한다.
 // 메인 문서 자체가 print 스타일(라이트 컬러 고정)로 전환되는 게 아니므로, 다크모드로
@@ -67,35 +85,39 @@ export default function PdfDownloadProvider({
 
   useEffect(() => {
     if (!job) return;
-
-    if (isIOSChrome()) {
-      const handleAfterPrint = () => {
-        setJob(null);
-        setLoadingType(null);
-      };
-      window.addEventListener("afterprint", handleAfterPrint);
-      window.print();
-      return () => window.removeEventListener("afterprint", handleAfterPrint);
-    }
-
-    if (!printRoot) return;
+    const iosChrome = isIOSChrome();
     const iframeWindow = iframeRef.current?.contentWindow;
-    if (!iframeWindow) return;
+    const targetWindow = iosChrome ? window : iframeWindow;
+    const targetRoot = iosChrome ? document.getElementById("pdf-print-root") : printRoot;
+    if (!targetWindow || !targetRoot) return;
+
+    let cancelled = false;
 
     const handleAfterPrint = () => {
       setJob(null);
       setLoadingType(null);
     };
-    iframeWindow.addEventListener("afterprint", handleAfterPrint);
-    // Portal로 그린 내용이 iframe 레이아웃에 커밋된 뒤 인쇄하도록 한 프레임 미룬다.
-    const raf = iframeWindow.requestAnimationFrame(() => {
-      iframeWindow.focus();
-      iframeWindow.print();
+    targetWindow.addEventListener("afterprint", handleAfterPrint);
+    // Portal 커밋 뒤 이미지 디코딩까지 기다려야 스크린샷이 PDF에 포함된다.
+    const raf = targetWindow.requestAnimationFrame(() => {
+      waitForPrintImages(targetRoot)
+        .then(() => {
+          if (cancelled) return;
+          targetWindow.focus();
+          targetWindow.print();
+        })
+        .catch(() => {
+          if (cancelled) return;
+          toast.error("스크린샷을 불러오지 못했어요. 다시 시도해주세요.");
+          setJob(null);
+          setLoadingType(null);
+        });
     });
 
     return () => {
-      iframeWindow.removeEventListener("afterprint", handleAfterPrint);
-      iframeWindow.cancelAnimationFrame(raf);
+      cancelled = true;
+      targetWindow.removeEventListener("afterprint", handleAfterPrint);
+      targetWindow.cancelAnimationFrame(raf);
     };
   }, [job, printRoot]);
 
