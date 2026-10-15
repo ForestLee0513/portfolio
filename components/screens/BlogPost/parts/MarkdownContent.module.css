@@ -1,0 +1,71 @@
+/* 인라인 코드는 언어 지정 여부와 관계없이 코드 블록과 구분한다. */
+.content :not(pre) > code {
+  border-radius: 0.375rem;
+  background: var(--secondary);
+  padding: 0.125rem 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--foreground);
+}
+
+/* 코드 블록은 밝은 테마에서도 어두운 배경과 동일한 구문 색상을 유지한다. */
+.content pre :global(.hljs-keyword),
+.content pre :global(.hljs-selector-tag),
+.content pre :global(.hljs-doctag) {
+  color: #c586c0;
+}
+
+.content pre :global(.hljs-string),
+.content pre :global(.hljs-regexp),
+.content pre :global(.hljs-template-tag) {
+  color: #ce9178;
+}
+
+.content pre :global(.hljs-title),
+.content pre :global(.hljs-section) {
+  color: #dcdcaa;
+}
+
+.content pre :global(.hljs-number),
+.content pre :global(.hljs-literal) {
+  color: #b5cea8;
+}
+
+.content pre :global(.hljs-type),
+.content pre :global(.hljs-built_in) {
+  color: #4ec9b0;
+}
+
+.content pre :global(.hljs-attr),
+.content pre :global(.hljs-attribute),
+.content pre :global(.hljs-variable),
+.content pre :global(.hljs-name) {
+  color: #9cdcfe;
+}
+
+.content pre :global(.hljs-comment),
+.content pre :global(.hljs-quote) {
+  color: #8fa876;
+}
+
+.content pre :global(.hljs-meta),
+.content pre :global(.hljs-symbol),
+.content pre :global(.hljs-bullet) {
+  color: #d7ba7d;
+}
+
+.content pre :global(.hljs-addition) {
+  color: #b5cea8;
+}
+
+.content pre :global(.hljs-deletion) {
+  color: #f48771;
+}
+
+.content pre :global(.hljs-emphasis) {
+  font-style: italic;
+}
+
+.content pre :global(.hljs-strong) {
+  font-weight: 700;
+}
