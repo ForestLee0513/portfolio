@@ -46,7 +46,7 @@ export const profile = {
       detail: "하드코딩 → Jinja2/DB 전환",
     },
     {
-      value: "약 184",
+      value: "약 184개",
       label: "공통 템플릿 활용 고객사",
       detail: "MVP 웹·앱 공통 템플릿 활용 규모",
     },
