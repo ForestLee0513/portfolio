@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import styles from "./MarkdownContent.module.css";
+import CodeBlock from "./CodeBlock";
 
 // Notion 공식 API의 pages.retrieveMarkdown()은 콜아웃/컬럼처럼 순수 마크다운으로
 // 표현 안 되는 블록을 <callout>, <columns> 같은 커스텀 태그로 함께 내려준다.
@@ -83,11 +84,7 @@ const htmlComponents: Components = {
       // eslint-disable-next-line @next/next/no-img-element -- Notion 이미지는 임의 도메인이라 next/image 최적화 대상에서 제외한다.
       <img src={src} alt={alt ?? ""} className="my-6 w-full rounded-3xl" />
     ) : null,
-  pre: ({ children }) => (
-    <pre className="my-6 overflow-x-auto rounded-2xl bg-[#1e1e1e] p-4 font-mono text-sm leading-6 text-zinc-100">
-      {children}
-    </pre>
-  ),
+  pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
   table: ({ children }) => (
     <div className="my-6 overflow-x-auto rounded-2xl ring-1 ring-border">
       <table className="w-full border-collapse text-sm">{children}</table>
